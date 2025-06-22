@@ -14,6 +14,8 @@
 #include <KDGpu/vulkan/vulkan_resource_manager.h>
 #include <KDGpu/vulkan/vulkan_surface.h>
 
+#include <algorithm>
+
 namespace KDGpu {
 
 namespace {
@@ -545,8 +547,8 @@ AdapterFeatures VulkanAdapter::queryAdapterFeatures()
         .rayTraversalPrimitiveCulling = false,
         .taskShader = false,
         .meshShader = false,
-        .multiviewMeshShader = static_cast<bool>(meshShaderFeatures.multiviewMeshShader),
-        .primitiveFragmentShadingRateMeshShader = static_cast<bool>(meshShaderFeatures.primitiveFragmentShadingRateMeshShader),
+        .multiviewMeshShader = false,
+        .primitiveFragmentShadingRateMeshShader = false,
         .meshShaderQueries = false,
         .hostImageCopy = false,
         .samplerYCbCrConversion = false,
@@ -569,6 +571,8 @@ AdapterFeatures VulkanAdapter::queryAdapterFeatures()
     features.meshShader = static_cast<bool>(meshShaderFeatures.meshShader);
     features.multiviewMeshShader = static_cast<bool>(meshShaderFeatures.multiviewMeshShader);
     features.meshShaderQueries = static_cast<bool>(meshShaderFeatures.meshShaderQueries);
+    features.multiviewMeshShader = static_cast<bool>(meshShaderFeatures.multiviewMeshShader);
+    features.primitiveFragmentShadingRateMeshShader = static_cast<bool>(meshShaderFeatures.primitiveFragmentShadingRateMeshShader);
 #endif
 
 #if defined(VK_KHR_synchronization2)

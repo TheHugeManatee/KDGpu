@@ -500,6 +500,7 @@ Handle<Device_t> VulkanResourceManager::createDevice(const Handle<Adapter_t> &ad
         addToChain(&raytracingFeaturesKhr);
     }
 
+#if defined(VK_EXT_mesh_shader)
     VkPhysicalDeviceMeshShaderFeaturesEXT meshShaderFeatures{};
     if (options.requestedFeatures.meshShader) {
         // Enable Mesh/Task shading
@@ -513,6 +514,7 @@ Handle<Device_t> VulkanResourceManager::createDevice(const Handle<Adapter_t> &ad
         meshShaderFeatures.meshShaderQueries = options.requestedFeatures.meshShaderQueries;
         addToChain(&meshShaderFeatures);
     }
+#endif
 
 #if defined(VK_EXT_host_image_copy)
     VkPhysicalDeviceHostImageCopyFeaturesEXT hostImageCopyFeatures{};

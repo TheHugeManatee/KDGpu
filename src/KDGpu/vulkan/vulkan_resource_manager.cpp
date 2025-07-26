@@ -215,7 +215,9 @@ Handle<Instance_t> VulkanResourceManager::createInstance(const InstanceOptions &
     }
 
     VkDebugUtilsMessengerCreateInfoEXT debugUtilsCreateInfo{};
-    const bool hasExtDebugUtilsExt = std::find(requestedInstanceExtensions.begin(), requestedInstanceExtensions.end(), VK_EXT_DEBUG_UTILS_EXTENSION_NAME) != requestedInstanceExtensions.end();
+
+    const auto isDebugUtilsExtension = [](const char *ext) { return ::strcmp(ext, VK_EXT_DEBUG_UTILS_EXTENSION_NAME) == 0; };
+    const bool hasExtDebugUtilsExt = std::find_if(requestedInstanceExtensions.begin(), requestedInstanceExtensions.end(), isDebugUtilsExtension) != requestedInstanceExtensions.end();
     const bool shouldRegisterDebugCallback = enableValidationLayers && hasExtDebugUtilsExt;
     if (shouldRegisterDebugCallback) {
         // Provide the debug utils creation info to the instance creation info so it can be used during instance creation

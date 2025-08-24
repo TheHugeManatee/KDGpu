@@ -59,6 +59,11 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
                                                                                         error == pCallbackData->pMessageIdName; }))
         return false;
 
+    if (auto customHandler = KDGpu::VulkanGraphicsApi::customValidationHandler(); customHandler) {
+        customHandler(messageSeverity, messageType, pCallbackData);
+        return VK_FALSE;
+    }
+
     switch (messageSeverity) {
     case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
         SPDLOG_LOGGER_DEBUG(KDGpu::Logger::logger(), "validation layer: {}", pCallbackData->pMessage);

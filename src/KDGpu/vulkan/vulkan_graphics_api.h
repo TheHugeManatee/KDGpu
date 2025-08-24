@@ -65,12 +65,19 @@ public:
 
     std::string getMemoryStats(const Handle<Device_t> &device) const;
 
+    using CustomValidationMessageHandler = void (*)(VkDebugUtilsMessageSeverityFlagBitsEXT /*messageSeverity*/,
+                                                    VkDebugUtilsMessageTypeFlagsEXT /*messageTypes*/,
+                                                    const VkDebugUtilsMessengerCallbackDataEXT * /*pCallbackData*/);
+
     static void addValidationMessageToIgnore(const std::string &messageToIgnore);
     static const std::vector<std::string> &validationMessagesToIgnore();
+    static void setCustomValidationHandler(CustomValidationMessageHandler handler);
+    static CustomValidationMessageHandler customValidationHandler();
 
 private:
     VulkanResourceManager m_vulkanResourceManager;
     static std::vector<std::string> ms_ignoredErrors;
+    static CustomValidationMessageHandler ms_customValidationMessageHandler;
 };
 
 } // namespace KDGpu

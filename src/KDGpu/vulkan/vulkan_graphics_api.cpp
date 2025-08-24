@@ -17,6 +17,7 @@
 namespace KDGpu {
 
 std::vector<std::string> VulkanGraphicsApi::ms_ignoredErrors = KDGpu::defaultIgnoredErrors;
+KDGpu::VulkanGraphicsApi::CustomValidationMessageHandler KDGpu::VulkanGraphicsApi::ms_customValidationMessageHandler = nullptr;
 
 VulkanGraphicsApi::VulkanGraphicsApi()
 {
@@ -132,6 +133,16 @@ Texture VulkanGraphicsApi::createTextureFromExistingVkImage(const Handle<Device_
 std::string VulkanGraphicsApi::getMemoryStats(const Handle<Device_t> &device) const
 {
     return m_vulkanResourceManager.getMemoryStats(device);
+}
+
+void VulkanGraphicsApi::setCustomValidationHandler(CustomValidationMessageHandler handler)
+{
+    ms_customValidationMessageHandler = handler;
+}
+
+KDGpu::VulkanGraphicsApi::CustomValidationMessageHandler VulkanGraphicsApi::customValidationHandler()
+{
+    return ms_customValidationMessageHandler;
 }
 
 void VulkanGraphicsApi::addValidationMessageToIgnore(const std::string &messageToIgnore)

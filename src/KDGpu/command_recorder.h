@@ -31,6 +31,7 @@ struct Device_t;
 struct Queue_t;
 
 struct CommandRecorderOptions {
+    std::string label;
     Handle<Queue_t> queue; // The queue on which you wish to submit the recorded commands. If not set, defaults to first queue of the device
     CommandBufferLevel level{ CommandBufferLevel::Primary };
 };

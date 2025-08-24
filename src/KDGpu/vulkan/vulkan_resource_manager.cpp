@@ -2289,13 +2289,15 @@ Handle<CommandRecorder_t> VulkanResourceManager::createCommandRecorder(const Han
             return {};
         }
         vulkanDevice->commandPools[queueTypeIndex] = vkCommandPool;
+
+        setObjectName(vulkanDevice, VK_OBJECT_TYPE_COMMAND_POOL, reinterpret_cast<uint64_t>(vkCommandPool), options.label);
     }
 
     // Create the Command Buffer
     VkCommandPool vkCommandPool = vulkanDevice->commandPools[queueTypeIndex];
     const Handle<CommandBuffer_t> commandBufferHandle = createCommandBuffer(deviceHandle,
                                                                             *queueDescription,
-                                                                            options.level);
+                                                                            options.level, options.label);
 
     // Finally, we can create the command recorder object
     const auto vulkanCommandRecorderHandle = m_commandRecorders.emplace(VulkanCommandRecorder(
@@ -2321,7 +2323,7 @@ VulkanCommandRecorder *VulkanResourceManager::getCommandRecorder(const Handle<Co
 
 Handle<CommandBuffer_t> VulkanResourceManager::createCommandBuffer(const Handle<Device_t> &deviceHandle,
                                                                    const QueueDescription &queueDescription,
-                                                                   CommandBufferLevel commandLevel)
+                                                                   CommandBufferLevel commandLevel, std::string label)
 {
     VulkanDevice *vulkanDevice = m_devices.get(deviceHandle);
     VkCommandPool vkCommandPool = vulkanDevice->commandPools[queueDescription.queueTypeIndex];
@@ -2338,6 +2340,8 @@ Handle<CommandBuffer_t> VulkanResourceManager::createCommandBuffer(const Handle<
         SPDLOG_LOGGER_ERROR(Logger::logger(), "Error when creating allocating command buffers: {}", result);
         return {};
     }
+
+    setObjectName(vulkanDevice, VK_OBJECT_TYPE_COMMAND_BUFFER, reinterpret_cast<uint64_t>(vkCommandBuffer), label);
 
     const auto vulkanCommandBufferHandle = m_commandBuffers.emplace(VulkanCommandBuffer(vkCommandBuffer,
                                                                                         vkCommandPool,

@@ -179,7 +179,7 @@ public:
     // Yet we add the usual create/destroy functions to make it more consistent
     Handle<CommandBuffer_t> createCommandBuffer(const Handle<Device_t> &deviceHandle,
                                                 const QueueDescription &queueDescription,
-                                                CommandBufferLevel commandLevel);
+                                                CommandBufferLevel commandLevel, std::string label);
     void deleteCommandBuffer(const Handle<CommandBuffer_t> &handle);
     [[nodiscard]] VulkanCommandBuffer *getCommandBuffer(const Handle<CommandBuffer_t> &handle) const;
 

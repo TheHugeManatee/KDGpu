@@ -376,9 +376,9 @@ TEST_SUITE("Texture")
             });
 
             // THEN -> No validation errors
-            std::ranges::all_of(rawImageData.begin(), rawImageData.end(), [](int rgba) {
+            CHECK(std::ranges::all_of(rawImageData.begin(), rawImageData.end(), [](int rgba) {
                 return rgba == 0xff0000ff;
-            });
+            }));
         }
 
         SUBCASE("Image -> Image -> Host")
@@ -484,9 +484,9 @@ TEST_SUITE("Texture")
             });
 
             // THEN -> No validation errors
-            std::ranges::all_of(rawImageData.begin(), rawImageData.end(), [](int rgba) {
+            CHECK(std::ranges::all_of(rawImageData.begin(), rawImageData.end(), [](int rgba) {
                 return rgba == 0xff0000ff;
-            });
+            }));
         }
     }
 #endif

@@ -1206,7 +1206,33 @@ enum class StencilFaceFlagBits {
 using StencilFaceFlags = KDGpu::Flags<StencilFaceFlagBits>;
 
 enum class DynamicState {
+    Viewport = 0,
+    Scissor = 1,
+    LineWidth = 2,
+    DepthBias = 3,
+    BlendConstants = 4,
+    DepthBounds = 5,
+    StencilCompareMask = 6,
+    StencilWriteMask = 7,
     StencilReference = 8,
+    // From Vulkan 1.3
+    CullMode = 1000267000,
+    FrontFace = 1000267001,
+    PrimitiveTopology = 1000267002,
+    ViewportWithCount = 1000267003,
+    ScissorWithCount = 1000267004,
+    VertexInputBindingStride = 1000267005,
+    DepthTestEnable = 1000267006,
+    DepthWriteEnable = 1000267007,
+    DepthCompareOp = 1000267008,
+    DepthBoundsTestEnable = 1000267009,
+    StencilTestEnable = 1000267010,
+    StencilOp = 1000267011,
+    RasterizerDiscardEnable = 1000377001,
+    DepthBiasEnable = 1000377002,
+    PrimitiveRestartEnable = 1000377004,
+    // From Vulkan 1.4
+    LineStipple = 1000259000,
 };
 
 enum class BuildAccelerationStructureMode {

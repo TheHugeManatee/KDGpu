@@ -3399,6 +3399,10 @@ Handle<BindGroupLayout_t> VulkanResourceManager::createBindGroupLayout(const Han
 
     std::vector<VkSampler> immutableSamplers;
 
+    // Associate the bindings into a descriptor set layout
+    VkDescriptorSetLayoutCreateInfo createInfo = { };
+    createInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+
     for (uint32_t j = 0; j < bindingLayoutCount; ++j) {
         const auto &bindingLayout = options.bindings.at(j);
 
@@ -3424,6 +3428,11 @@ Handle<BindGroupLayout_t> VulkanResourceManager::createBindGroupLayout(const Han
 
         VkDescriptorBindingFlags vkBindingFlag = resourceBindingFlagsToVkDescriptorBindingFlags(bindingLayout.flags);
         vkBindingFlags.emplace_back(vkBindingFlag);
+
+        // If any binding has UpdateAfterBind, the whole layout must be created with that flag
+        if (bindingLayout.flags & ResourceBindingFlagBits::UpdateAfterBindBit) {
+            createInfo.flags |= VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT_EXT;
+        }
     }
 
     VkDescriptorSetLayoutBindingFlagsCreateInfo setLayoutBindingFlags{};
@@ -3431,9 +3440,6 @@ Handle<BindGroupLayout_t> VulkanResourceManager::createBindGroupLayout(const Han
     setLayoutBindingFlags.bindingCount = static_cast<uint32_t>(vkBindingFlags.size());
     setLayoutBindingFlags.pBindingFlags = vkBindingFlags.data();
 
-    // Associate the bindings into a descriptor set layout
-    VkDescriptorSetLayoutCreateInfo createInfo = {};
-    createInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
     createInfo.bindingCount = static_cast<uint32_t>(vkBindingLayouts.size());
     createInfo.pBindings = vkBindingLayouts.data();
     createInfo.pNext = &setLayoutBindingFlags;

@@ -108,6 +108,10 @@ public:
     void setViewport(const Viewport &viewport);
     void setScissor(const Rect2D &scissor);
     void setStencilReference(StencilFaceFlags faceMask, int reference);
+    void setCullMode(CullModeFlags cullMode);
+    void setDepthTestEnabled(bool enabled);
+    void setDepthWriteEnabled(bool enabled);
+    void setDepthCompareOp(CompareOperation op);
 
     void draw(const DrawCommand &drawCommand);
     void draw(std::span<const DrawCommand> drawCommands);

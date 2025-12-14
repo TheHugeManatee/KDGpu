@@ -80,6 +80,9 @@ CompareOperation vkCompareOpToCompareOperation(VkCompareOp op);
 VkStencilOp stencilOperationToVkStencilOp(StencilOperation op);
 StencilOperation vkStencilOpToStencilOperation(StencilOperation op);
 
+VkCullModeFlagBits cullModeToVkCullMode(CullModeFlags cullMode);
+CullModeFlags vkCullModeToCullMode(VkCullModeFlagBits cullMode);
+
 VkBlendFactor blendFactorToVkBlendFactor(BlendFactor factor);
 BlendFactor vkBlendFactorToBlendFactor(VkBlendFactor factor);
 

@@ -128,6 +128,24 @@ void VulkanRenderPassCommandRecorder::setStencilReference(const StencilFaceFlags
 {
     vkCmdSetStencilReference(commandBuffer, stencilFaceToVkStencilFace(faceMask), reference);
 }
+void VulkanRenderPassCommandRecorder::setCullMode(CullModeFlags cullMode)
+{
+    vkCmdSetCullMode(commandBuffer, cullModeToVkCullMode(cullMode));
+}
+void VulkanRenderPassCommandRecorder::setDepthTestEnabled(bool enabled)
+{
+    vkCmdSetDepthTestEnable(commandBuffer, enabled ? VK_TRUE : VK_FALSE);
+}
+
+void VulkanRenderPassCommandRecorder::setDepthWriteEnabled(bool enabled)
+{
+    vkCmdSetDepthWriteEnable(commandBuffer, enabled ? VK_TRUE : VK_FALSE);
+}
+
+void VulkanRenderPassCommandRecorder::setDepthCompareOp(CompareOperation op)
+{
+    vkCmdSetDepthCompareOp(commandBuffer, compareOperationToVkCompareOp(op));
+}
 
 void VulkanRenderPassCommandRecorder::draw(const DrawCommand &drawCommand) const
 {

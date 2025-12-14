@@ -395,6 +395,16 @@ VkStencilFaceFlagBits stencilFaceToVkStencilFace(StencilFaceFlags flags)
     return static_cast<VkStencilFaceFlagBits>(flags.toInt());
 }
 
+VkCullModeFlagBits cullModeToVkCullMode(CullModeFlags cullMode)
+{
+    return static_cast<VkCullModeFlagBits>(cullMode.toInt());
+}
+
+CullModeFlags vkCullModeToCullMode(VkCullModeFlagBits cullMode)
+{
+    return CullModeFlags::fromInt(static_cast<uint32_t>(cullMode));
+}
+
 VkDynamicState dynamicStateToVkDynamicState(DynamicState state)
 {
     return static_cast<VkDynamicState>(state);

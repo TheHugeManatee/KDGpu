@@ -93,6 +93,27 @@ void RenderPassCommandRecorder::setStencilReference(const StencilFaceFlags faceM
     apiRenderPassCommandRecorder->setStencilReference(faceMask, reference);
 }
 
+void RenderPassCommandRecorder::setCullMode(CullModeFlags cullMode)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setCullMode(cullMode);
+}
+void RenderPassCommandRecorder::setDepthTestEnabled(bool enabled)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setDepthTestEnabled(enabled);
+}
+void RenderPassCommandRecorder::setDepthWriteEnabled(bool enabled)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setDepthWriteEnabled(enabled);
+}
+void RenderPassCommandRecorder::setDepthCompareOp(CompareOperation op)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setDepthCompareOp(op);
+}
+
 void RenderPassCommandRecorder::end()
 {
     auto *apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);

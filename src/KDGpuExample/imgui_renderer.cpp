@@ -147,6 +147,7 @@ void ImGuiRenderer::initialize(float scaleFactor, KDGpu::SampleCountFlagBits sam
     m_sampler = m_device->createSampler(samplerOptions);
 
     m_pipelineInfo = GraphicsPipelineOptions{
+        .label = "ImGui Pipeline",
         .shaderStages = {
                 { .shaderModule = m_vertexShader, .stage = ShaderStageFlagBits::VertexBit },
                 { .shaderModule = m_fragmentShader, .stage = ShaderStageFlagBits::FragmentBit },

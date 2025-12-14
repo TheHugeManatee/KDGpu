@@ -2638,8 +2638,8 @@ Handle<RenderPassCommandRecorder_t> VulkanResourceManager::createRenderPassComma
             vkClearValue.color.uint32[3] = arg.clearValue.uint32[3];
             vkClearValues[clearIdx++] = vkClearValue;
 
-            // Include clear color again if using a resolve view. Must match number of attachments.
-            if (attachment.resolveView.isValid())
+            // Include resolve clear color again if using MSAA. Must match number of attachments.
+            if (usingMsaa && attachment.resolveView.isValid())
                 vkClearValues[clearIdx++] = vkClearValue;
         } else if (attachment.depth.has_value()) {
             auto arg = attachment.depth.value();
@@ -3400,7 +3400,7 @@ Handle<BindGroupLayout_t> VulkanResourceManager::createBindGroupLayout(const Han
     std::vector<VkSampler> immutableSamplers;
 
     // Associate the bindings into a descriptor set layout
-    VkDescriptorSetLayoutCreateInfo createInfo = { };
+    VkDescriptorSetLayoutCreateInfo createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 
     for (uint32_t j = 0; j < bindingLayoutCount; ++j) {

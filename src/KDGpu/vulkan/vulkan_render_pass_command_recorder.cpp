@@ -54,6 +54,31 @@ void VulkanRenderPassCommandRecorder::setPipeline(const Handle<GraphicsPipeline_
     }
 }
 
+void VulkanRenderPassCommandRecorder::bindShaders(const std::vector<ShaderStageFlags> &stages, const std::vector<Handle<ShaderObject_t>> &shaders)
+{
+#ifdef VK_EXT_shader_object
+    assert(stages.size() == shaders.size()); // Must have one handle per stage
+    const uint32_t stageCount = static_cast<uint32_t>(shaders.size());
+
+    // reinterpret_cast is safe because KDGpu::ShaderStageFlagBits matches VkShaderStageFlagBits exactly
+    const VkShaderStageFlagBits *vkStages = reinterpret_cast<const VkShaderStageFlagBits *>(stages.data());
+
+    // Collect all shader objects
+    std::vector<VkShaderEXT> vkShaderObjects;
+    vkShaderObjects.reserve(shaders.size());
+    for (const auto &handle : shaders) {
+        const VulkanShaderObject *shaderObject = vulkanResourceManager->getShaderObject(handle);
+        assert(shaderObject && "Invalid ShaderObject handle provided to bindShaders");
+        vkShaderObjects.push_back(shaderObject->shaderObject);
+    }
+
+    VulkanDevice *vulkanDevice = vulkanResourceManager->getDevice(deviceHandle);
+    vulkanDevice->vkCmdBindShadersEXT(commandBuffer, stageCount, vkStages, vkShaderObjects.data());
+#else
+    assert(false);
+#endif
+}
+
 void VulkanRenderPassCommandRecorder::setVertexBuffer(uint32_t index, const Handle<Buffer_t> &buffer, DeviceSize offset) const
 {
     VulkanBuffer *vulkanBuffer = vulkanResourceManager->getBuffer(buffer);

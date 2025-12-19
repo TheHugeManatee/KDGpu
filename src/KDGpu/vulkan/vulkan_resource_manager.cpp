@@ -28,6 +28,7 @@
 #include <KDGpu/graphics_pipeline_options.h>
 #include <KDGpu/instance.h>
 #include <KDGpu/sampler_options.h>
+#include <KDGpu/shader_object_options.h>
 #include <KDGpu/swapchain_options.h>
 #include <KDGpu/texture_options.h>
 #include <KDGpu/raytracing_pipeline_options.h>
@@ -595,6 +596,16 @@ Handle<Device_t> VulkanResourceManager::createDevice(const Handle<Adapter_t> &ad
         ycbcrConversionFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES_KHR;
         ycbcrConversionFeatures.samplerYcbcrConversion = options.requestedFeatures.samplerYCbCrConversion;
         addToChain(&ycbcrConversionFeatures);
+    }
+#endif
+
+#if defined(VK_EXT_shader_object)
+    VkPhysicalDeviceShaderObjectFeaturesEXT shaderObjectFeatures{};
+    if (options.requestedFeatures.shaderObject) {
+        // Enable shader object
+        shaderObjectFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT;
+        shaderObjectFeatures.shaderObject = options.requestedFeatures.shaderObject;
+        addToChain(&shaderObjectFeatures);
     }
 #endif
 
@@ -1248,6 +1259,93 @@ void VulkanResourceManager::deleteShaderModule(const Handle<ShaderModule_t> &han
 VulkanShaderModule *VulkanResourceManager::getShaderModule(const Handle<ShaderModule_t> &handle) const
 {
     return m_shaderModules.get(handle);
+}
+
+Handle<ShaderObject_t> VulkanResourceManager::createShaderObject(const Handle<Device_t> &deviceHandle, const ShaderObjectOptions &options)
+{
+#ifdef VK_EXT_shader_object
+    VulkanDevice *vulkanDevice = m_devices.get(deviceHandle);
+
+    // Retrieve VkDescriptorSetLayout from the referenced options.bindGroupLayouts array
+    assert(options.bindGroupLayouts.size() <= std::numeric_limits<uint32_t>::max());
+    const uint32_t bindGroupLayoutCount = static_cast<uint32_t>(options.bindGroupLayouts.size());
+    std::vector<VkDescriptorSetLayout> vkDescriptorSetLayouts;
+    vkDescriptorSetLayouts.reserve(bindGroupLayoutCount);
+
+    for (uint32_t i = 0; i < bindGroupLayoutCount; ++i) {
+        VulkanBindGroupLayout *bindGroupLayout = getBindGroupLayout(options.bindGroupLayouts[i]);
+        vkDescriptorSetLayouts.push_back(bindGroupLayout->descriptorSetLayout);
+    }
+
+    // Create the push constant range
+    assert(options.pushConstantRanges.size() <= std::numeric_limits<uint32_t>::max());
+    const uint32_t pushConstantRangeCount = options.pushConstantRanges.size();
+    std::vector<VkPushConstantRange> vkPushConstantRanges;
+    vkPushConstantRanges.reserve(pushConstantRangeCount);
+
+    for (uint32_t i = 0; i < pushConstantRangeCount; ++i) {
+        const auto &pushConstantRange = options.pushConstantRanges[i];
+
+        VkPushConstantRange vkPushConstantRange = {
+            .stageFlags = pushConstantRange.shaderStages.toInt(),
+            .offset = pushConstantRange.offset,
+            .size = pushConstantRange.size
+        };
+
+        vkPushConstantRanges.emplace_back(std::move(vkPushConstantRange));
+    }
+
+    VkShaderCreateInfoEXT createInfo = {
+        .sType = VK_STRUCTURE_TYPE_SHADER_CREATE_INFO_EXT,
+        .pNext = NULL,
+        .flags = {},
+        .stage = shaderStageFlagBitsToVkShaderStageFlagBits(options.stage),
+        .nextStage = options.nextStage.toInt(),
+        .codeType = VK_SHADER_CODE_TYPE_SPIRV_EXT,
+        .codeSize = options.code.size(),
+        .pCode = options.code.data(),
+        .pName = options.entryPoint.c_str(),
+        .setLayoutCount = bindGroupLayoutCount,
+        .pSetLayouts = vkDescriptorSetLayouts.data(),
+        .pushConstantRangeCount = pushConstantRangeCount,
+        .pPushConstantRanges = vkPushConstantRanges.data(),
+        .pSpecializationInfo = NULL
+    };
+
+    VkShaderEXT shaderObject;
+    if (VkResult result = vulkanDevice->vkCreateShadersEXT(vulkanDevice->device, 1, &createInfo, NULL, &shaderObject); result != VK_SUCCESS) {
+        SPDLOG_LOGGER_ERROR(Logger::logger(), "Error when creating shader object: {}", result);
+        return {};
+    }
+
+    setObjectName(vulkanDevice, VK_OBJECT_TYPE_SHADER_EXT, reinterpret_cast<uint64_t>(shaderObject), options.label);
+
+    const auto vulkanShaderObjectHandle = m_shaderObjects.emplace(shaderObject, this, deviceHandle);
+    return vulkanShaderObjectHandle;
+#else
+    assert(false);
+    return {};
+#endif
+}
+
+void VulkanResourceManager::deleteShaderObject(const Handle<ShaderObject_t> &handle)
+{
+#ifdef VK_EXT_shader_object
+    VulkanShaderObject *shaderObject = m_shaderObjects.get(handle);
+    VulkanDevice *vulkanDevice = m_devices.get(shaderObject->deviceHandle);
+
+    vulkanDevice->vkDestroyShaderEXT(vulkanDevice->device, shaderObject->shaderObject, nullptr);
+
+    m_shaderObjects.remove(handle);
+#else
+    assert(false);
+    return {};
+#endif
+}
+
+VulkanShaderObject *VulkanResourceManager::getShaderObject(const Handle<ShaderObject_t> &handle) const
+{
+    return m_shaderObjects.get(handle);
 }
 
 namespace {

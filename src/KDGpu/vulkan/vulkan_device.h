@@ -173,6 +173,12 @@ struct KDGPU_EXPORT VulkanDevice {
     PFN_vkCmdSetRenderingInputAttachmentIndicesKHR vkCmdSetRenderingInputAttachmentIndicesKHR{ nullptr };
 #endif
 
+#if defined(VK_EXT_shader_object)
+    PFN_vkCreateShadersEXT vkCreateShadersEXT{ nullptr };
+    PFN_vkDestroyShaderEXT vkDestroyShaderEXT{ nullptr };
+    PFN_vkCmdBindShadersEXT vkCmdBindShadersEXT{ nullptr };
+#endif
+
     bool isOwned{ true };
     // NOLINTEND(misc-non-private-member-variables-in-classes)
 };

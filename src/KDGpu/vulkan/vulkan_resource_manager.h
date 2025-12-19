@@ -31,6 +31,7 @@
 #include <KDGpu/vulkan/vulkan_render_pass_command_recorder.h>
 #include <KDGpu/vulkan/vulkan_sampler.h>
 #include <KDGpu/vulkan/vulkan_shader_module.h>
+#include <KDGpu/vulkan/vulkan_shader_object.h>
 #include <KDGpu/vulkan/vulkan_swapchain.h>
 #include <KDGpu/vulkan/vulkan_surface.h>
 #include <KDGpu/vulkan/vulkan_texture.h>
@@ -59,6 +60,8 @@ struct RenderTargetOptions;
 struct DepthStencilOptions;
 struct BindGroupPoolOptions;
 struct ShaderStage;
+struct ShaderObject_t;
+struct ShaderObjectOptions;
 
 class KDGPU_EXPORT VulkanResourceManager
 {
@@ -113,6 +116,10 @@ public:
     Handle<ShaderModule_t> createShaderModule(const Handle<Device_t> &deviceHandle, const std::vector<uint32_t> &code);
     void deleteShaderModule(const Handle<ShaderModule_t> &handle);
     [[nodiscard]] VulkanShaderModule *getShaderModule(const Handle<ShaderModule_t> &handle) const;
+
+    Handle<ShaderObject_t> createShaderObject(const Handle<Device_t> &deviceHandle, const ShaderObjectOptions& options);
+    void deleteShaderObject(const Handle<ShaderObject_t> &handle);
+    VulkanShaderObject *getShaderObject(const Handle<ShaderObject_t> &handle) const;
 
     Handle<RenderPass_t> createRenderPass(const Handle<Device_t> &deviceHandle, const RenderPassOptions &options);
     void deleteRenderPass(const Handle<RenderPass_t> &handle);
@@ -271,6 +278,7 @@ private:
     Pool<VulkanTextureView, TextureView_t> m_textureViews{ 128 };
     Pool<VulkanBuffer, Buffer_t> m_buffers{ 128 };
     Pool<VulkanShaderModule, ShaderModule_t> m_shaderModules{ 64 };
+    Pool<VulkanShaderObject, ShaderObject_t> m_shaderObjects{ 64 };
     Pool<VulkanPipelineLayout, PipelineLayout_t> m_pipelineLayouts{ 64 };
     Pool<VulkanBindGroupLayout, BindGroupLayout_t> m_bindGroupLayouts{ 128 };
     Pool<VulkanBindGroup, BindGroup_t> m_bindGroups{ 128 };

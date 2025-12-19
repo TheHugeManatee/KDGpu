@@ -26,6 +26,7 @@ struct Device_t;
 struct GraphicsPipeline_t;
 struct PipelineLayout_t;
 struct RenderPassCommandRecorder_t;
+struct ShaderObject_t;
 
 struct Rect2D;
 struct Viewport;
@@ -95,6 +96,8 @@ public:
     operator Handle<RenderPassCommandRecorder_t>() const noexcept { return m_renderPassCommandRecorder; }
 
     void setPipeline(const Handle<GraphicsPipeline_t> &pipeline);
+
+    void bindShaders(const std::vector<ShaderStageFlags>& stages, const std::vector<Handle<ShaderObject_t>>& shaders);
 
     // TODO: Add overload for setting many vertex buffers at once
     void setVertexBuffer(uint32_t index, const Handle<Buffer_t> &buffer, DeviceSize offset = 0);

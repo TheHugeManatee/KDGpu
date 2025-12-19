@@ -55,6 +55,12 @@ void RenderPassCommandRecorder::setPipeline(const Handle<GraphicsPipeline_t> &pi
     apiRenderPassCommandRecorder->setPipeline(pipeline);
 }
 
+void RenderPassCommandRecorder::bindShaders(const std::vector<ShaderStageFlags>& stages, const std::vector<Handle<ShaderObject_t>>& shaders)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->bindShaders(stages, shaders);
+}
+
 void RenderPassCommandRecorder::setVertexBuffer(uint32_t index, const Handle<Buffer_t> &buffer, DeviceSize offset)
 {
     auto *apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);

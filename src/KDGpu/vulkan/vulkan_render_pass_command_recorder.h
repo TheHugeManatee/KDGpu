@@ -39,6 +39,7 @@ struct KDGPU_EXPORT VulkanRenderPassCommandRecorder {
                                              bool _dynamicRendering);
 
     void setPipeline(const Handle<GraphicsPipeline_t> &pipeline);
+    void bindShaders(const std::vector<ShaderStageFlags>& stages, const std::vector<Handle<ShaderObject_t>>& shaders);
     void setVertexBuffer(uint32_t index, const Handle<Buffer_t> &buffer, DeviceSize offset) const;
     void setIndexBuffer(const Handle<Buffer_t> &buffer, DeviceSize offset, IndexType indexType) const;
     void setBindGroup(uint32_t group, const Handle<BindGroup_t> &bindGroup,

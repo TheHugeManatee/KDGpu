@@ -36,6 +36,7 @@ set(SOURCES
     render_pass.cpp
     sampler.cpp
     shader_module.cpp
+    shader_object.cpp
     swapchain.cpp
     surface.cpp
     texture.cpp
@@ -71,6 +72,7 @@ set(SOURCES
     vulkan/vulkan_resource_manager.cpp
     vulkan/vulkan_sampler.cpp
     vulkan/vulkan_shader_module.cpp
+    vulkan/vulkan_shader_object.cpp
     vulkan/vulkan_swapchain.cpp
     vulkan/vulkan_surface.cpp
     vulkan/vulkan_texture.cpp
@@ -131,6 +133,7 @@ set(HEADERS
     sampler.h
     sampler_options.h
     shader_module.h
+    shader_object.h
     swapchain.h
     swapchain_options.h
     surface.h
@@ -177,6 +180,7 @@ set(HEADERS
     vulkan/vulkan_resource_manager.h
     vulkan/vulkan_sampler.h
     vulkan/vulkan_shader_module.h
+    vulkan/vulkan_shader_object.h
     vulkan/vulkan_swapchain.h
     vulkan/vulkan_surface.h
     vulkan/vulkan_texture.h

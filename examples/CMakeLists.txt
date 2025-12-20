@@ -91,7 +91,7 @@ if(TARGET KDGpu::KDGpuExample)
         add_subdirectory(hello_triangle_apple)
     endif()
 
-    if(KDGPU_BUILD_KDXR)
+    if(KDGPU_OPENXR_SUPPORT)
         add_subdirectory(hello_xr)
         add_subdirectory(hello_xr_multiview)
     endif()

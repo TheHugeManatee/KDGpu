@@ -88,6 +88,44 @@ void VulkanRenderPassCommandRecorder::setVertexBuffer(uint32_t index, const Hand
     vkCmdBindVertexBuffers(commandBuffer, index, 1, buffers.data(), offsets.data());
 }
 
+void VulkanRenderPassCommandRecorder::setVertexBuffers(uint32_t firstBinding, const std::vector<VertexBufferBinding> &bindings)
+{
+    if (bindings.empty())
+        return;
+
+#if defined(VK_EXT_extended_dynamic_state)
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    assert(device->vkCmdBindVertexBuffers2EXT && "VK_EXT_extended_dynamic_state not enabled on device");
+
+    const uint32_t bindingCount = static_cast<uint32_t>(bindings.size());
+    std::vector<VkBuffer> vkBuffers(bindingCount, VK_NULL_HANDLE);
+    std::vector<VkDeviceSize> offsets(bindingCount);
+    std::vector<VkDeviceSize> sizes(bindingCount);
+    std::vector<VkDeviceSize> strides(bindingCount);
+
+    for (uint32_t i = 0; i < bindingCount; ++i) {
+        const auto &binding = bindings[i];
+        VulkanBuffer *vulkanBuffer = vulkanResourceManager->getBuffer(binding.buffer);
+        vkBuffers[i] = vulkanBuffer ? vulkanBuffer->buffer : VK_NULL_HANDLE;
+        offsets[i] = binding.offset;
+        sizes[i] = (binding.size == WholeSize) ? VK_WHOLE_SIZE : binding.size;
+        strides[i] = binding.stride;
+    }
+
+    device->vkCmdBindVertexBuffers2EXT(commandBuffer,
+                                       firstBinding,
+                                       bindingCount,
+                                       vkBuffers.data(),
+                                       offsets.data(),
+                                       sizes.data(),
+                                       strides.data());
+#else
+    (void)firstBinding;
+    (void)bindings;
+    assert(false && "VK_EXT_extended_dynamic_state not supported by headers");
+#endif
+}
+
 void VulkanRenderPassCommandRecorder::setIndexBuffer(const Handle<Buffer_t> &buffer, DeviceSize offset, IndexType indexType) const
 {
     VulkanBuffer *vulkanBuffer = vulkanResourceManager->getBuffer(buffer);
@@ -170,6 +208,409 @@ void VulkanRenderPassCommandRecorder::setDepthWriteEnabled(bool enabled)
 void VulkanRenderPassCommandRecorder::setDepthCompareOp(CompareOperation op)
 {
     vkCmdSetDepthCompareOp(commandBuffer, compareOperationToVkCompareOp(op));
+}
+
+void VulkanRenderPassCommandRecorder::setDepthBiasEnabled(bool enabled)
+{
+#if defined(VK_EXT_extended_dynamic_state2)
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    assert(device->vkCmdSetDepthBiasEnableEXT && "VK_EXT_extended_dynamic_state2 not enabled on device");
+    device->vkCmdSetDepthBiasEnableEXT(commandBuffer, enabled ? VK_TRUE : VK_FALSE);
+#else
+    (void)enabled;
+    assert(false && "VK_EXT_extended_dynamic_state2 not supported by headers");
+#endif
+}
+
+void VulkanRenderPassCommandRecorder::setDepthBoundsTestEnabled(bool enabled)
+{
+#if defined(VK_EXT_extended_dynamic_state)
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    assert(device->vkCmdSetDepthBoundsTestEnableEXT && "VK_EXT_extended_dynamic_state not enabled on device");
+    device->vkCmdSetDepthBoundsTestEnableEXT(commandBuffer, enabled ? VK_TRUE : VK_FALSE);
+#else
+    (void)enabled;
+    assert(false && "VK_EXT_extended_dynamic_state not supported by headers");
+#endif
+}
+
+void VulkanRenderPassCommandRecorder::setDepthClampEnabled(bool enabled)
+{
+#if defined(VK_EXT_extended_dynamic_state3)
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    assert(device->vkCmdSetDepthClampEnableEXT && "VK_EXT_extended_dynamic_state3 not enabled on device");
+    device->vkCmdSetDepthClampEnableEXT(commandBuffer, enabled ? VK_TRUE : VK_FALSE);
+#else
+    (void)enabled;
+    assert(false && "VK_EXT_extended_dynamic_state3 not supported by headers");
+#endif
+}
+
+void VulkanRenderPassCommandRecorder::setFrontFace(FrontFace frontFace)
+{
+#if defined(VK_EXT_extended_dynamic_state)
+    if (auto *device = vulkanResourceManager->getDevice(deviceHandle); device->vkCmdSetFrontFaceEXT) {
+        device->vkCmdSetFrontFaceEXT(commandBuffer, frontFaceToVkFrontFace(frontFace));
+        return;
+    }
+#endif
+    vkCmdSetFrontFace(commandBuffer, frontFaceToVkFrontFace(frontFace));
+}
+
+void VulkanRenderPassCommandRecorder::setPolygonMode(PolygonMode polygonMode)
+{
+#if defined(VK_EXT_extended_dynamic_state3)
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    assert(device->vkCmdSetPolygonModeEXT && "VK_EXT_extended_dynamic_state3 not enabled on device");
+    device->vkCmdSetPolygonModeEXT(commandBuffer, polygonModeToVkPolygonMode(polygonMode));
+#else
+    (void)polygonMode;
+    assert(false && "VK_EXT_extended_dynamic_state3 not supported by headers");
+#endif
+}
+
+void VulkanRenderPassCommandRecorder::setPrimitiveRestartEnabled(bool enabled)
+{
+#if defined(VK_EXT_extended_dynamic_state2)
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    assert(device->vkCmdSetPrimitiveRestartEnableEXT && "VK_EXT_extended_dynamic_state2 not enabled on device");
+    device->vkCmdSetPrimitiveRestartEnableEXT(commandBuffer, enabled ? VK_TRUE : VK_FALSE);
+#else
+    (void)enabled;
+    assert(false && "VK_EXT_extended_dynamic_state2 not supported by headers");
+#endif
+}
+
+void VulkanRenderPassCommandRecorder::setPrimitiveTopology(PrimitiveTopology topology)
+{
+#if defined(VK_EXT_extended_dynamic_state)
+    if (auto *device = vulkanResourceManager->getDevice(deviceHandle); device->vkCmdSetPrimitiveTopologyEXT) {
+        device->vkCmdSetPrimitiveTopologyEXT(commandBuffer, primitiveTopologyToVkPrimitiveTopology(topology));
+        return;
+    }
+#endif
+    vkCmdSetPrimitiveTopology(commandBuffer, primitiveTopologyToVkPrimitiveTopology(topology));
+}
+
+void VulkanRenderPassCommandRecorder::setRasterizerDiscardEnabled(bool enabled)
+{
+#if defined(VK_EXT_extended_dynamic_state2)
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    assert(device->vkCmdSetRasterizerDiscardEnableEXT && "VK_EXT_extended_dynamic_state2 not enabled on device");
+    device->vkCmdSetRasterizerDiscardEnableEXT(commandBuffer, enabled ? VK_TRUE : VK_FALSE);
+#else
+    (void)enabled;
+    assert(false && "VK_EXT_extended_dynamic_state2 not supported by headers");
+#endif
+}
+
+void VulkanRenderPassCommandRecorder::setTessellationDomainOrigin(TessellationDomainOrigin origin)
+{
+#if defined(VK_EXT_extended_dynamic_state3)
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    assert(device->vkCmdSetTessellationDomainOriginEXT && "VK_EXT_extended_dynamic_state3 not enabled on device");
+    device->vkCmdSetTessellationDomainOriginEXT(commandBuffer, tessellationDomainOriginToVkTessellationDomainOrigin(origin));
+#else
+    (void)origin;
+    assert(false && "VK_EXT_extended_dynamic_state3 not supported by headers");
+#endif
+}
+
+void VulkanRenderPassCommandRecorder::setPatchControlPoints(uint32_t controlPoints)
+{
+#if defined(VK_EXT_extended_dynamic_state2)
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    assert(device->vkCmdSetPatchControlPointsEXT && "VK_EXT_extended_dynamic_state2 not enabled on device");
+    device->vkCmdSetPatchControlPointsEXT(commandBuffer, controlPoints);
+#else
+    (void)controlPoints;
+    assert(false && "VK_EXT_extended_dynamic_state2 not supported by headers");
+#endif
+}
+
+void VulkanRenderPassCommandRecorder::setRasterizationSamples(SampleCountFlagBits samples)
+{
+#if defined(VK_EXT_extended_dynamic_state3)
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    assert(device->vkCmdSetRasterizationSamplesEXT && "VK_EXT_extended_dynamic_state3 not enabled on device");
+    device->vkCmdSetRasterizationSamplesEXT(commandBuffer, sampleCountFlagBitsToVkSampleFlagBits(samples));
+#else
+    (void)samples;
+    assert(false && "VK_EXT_extended_dynamic_state3 not supported by headers");
+#endif
+}
+
+void VulkanRenderPassCommandRecorder::setSampleMask(SampleCountFlagBits samples, const std::vector<SampleMask> &sampleMasks)
+{
+#if defined(VK_EXT_extended_dynamic_state3)
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    assert(device->vkCmdSetSampleMaskEXT && "VK_EXT_extended_dynamic_state3 not enabled on device");
+    device->vkCmdSetSampleMaskEXT(commandBuffer, sampleCountFlagBitsToVkSampleFlagBits(samples), sampleMasks.data());
+#else
+    (void)samples;
+    (void)sampleMasks;
+    assert(false && "VK_EXT_extended_dynamic_state3 not supported by headers");
+#endif
+}
+
+void VulkanRenderPassCommandRecorder::setAlphaToCoverageEnabled(bool enabled)
+{
+#if defined(VK_EXT_extended_dynamic_state3)
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    assert(device->vkCmdSetAlphaToCoverageEnableEXT && "VK_EXT_extended_dynamic_state3 not enabled on device");
+    device->vkCmdSetAlphaToCoverageEnableEXT(commandBuffer, enabled ? VK_TRUE : VK_FALSE);
+#else
+    (void)enabled;
+    assert(false && "VK_EXT_extended_dynamic_state3 not supported by headers");
+#endif
+}
+
+void VulkanRenderPassCommandRecorder::setAlphaToOneEnabled(bool enabled)
+{
+#if defined(VK_EXT_extended_dynamic_state3)
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    assert(device->vkCmdSetAlphaToOneEnableEXT && "VK_EXT_extended_dynamic_state3 not enabled on device");
+    device->vkCmdSetAlphaToOneEnableEXT(commandBuffer, enabled ? VK_TRUE : VK_FALSE);
+#else
+    (void)enabled;
+    assert(false && "VK_EXT_extended_dynamic_state3 not supported by headers");
+#endif
+}
+
+void VulkanRenderPassCommandRecorder::setColorBlendEnabled(uint32_t firstAttachment, const std::vector<bool> &enables)
+{
+#if defined(VK_EXT_extended_dynamic_state3)
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    assert(device->vkCmdSetColorBlendEnableEXT && "VK_EXT_extended_dynamic_state3 not enabled on device");
+
+    const uint32_t count = static_cast<uint32_t>(enables.size());
+    std::vector<VkBool32> vkEnables(count);
+    for (uint32_t i = 0; i < count; ++i)
+        vkEnables[i] = enables[i] ? VK_TRUE : VK_FALSE;
+
+    device->vkCmdSetColorBlendEnableEXT(commandBuffer, firstAttachment, count, vkEnables.data());
+#else
+    (void)firstAttachment;
+    (void)enables;
+    assert(false && "VK_EXT_extended_dynamic_state3 not supported by headers");
+#endif
+}
+
+void VulkanRenderPassCommandRecorder::setColorBlendEquations(uint32_t firstAttachment, const std::vector<ColorBlendEquation> &equations)
+{
+#if defined(VK_EXT_extended_dynamic_state3)
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    assert(device->vkCmdSetColorBlendEquationEXT && "VK_EXT_extended_dynamic_state3 not enabled on device");
+
+    const uint32_t count = static_cast<uint32_t>(equations.size());
+    std::vector<VkColorBlendEquationEXT> vkEquations(count);
+    for (uint32_t i = 0; i < count; ++i) {
+        const auto &eq = equations[i];
+        vkEquations[i] = {
+            .srcColorBlendFactor = blendFactorToVkBlendFactor(eq.srcColorBlendFactor),
+            .dstColorBlendFactor = blendFactorToVkBlendFactor(eq.dstColorBlendFactor),
+            .colorBlendOp = blendOperationToVkBlendOp(eq.colorBlendOp),
+            .srcAlphaBlendFactor = blendFactorToVkBlendFactor(eq.srcAlphaBlendFactor),
+            .dstAlphaBlendFactor = blendFactorToVkBlendFactor(eq.dstAlphaBlendFactor),
+            .alphaBlendOp = blendOperationToVkBlendOp(eq.alphaBlendOp)
+        };
+    }
+
+    device->vkCmdSetColorBlendEquationEXT(commandBuffer, firstAttachment, count, vkEquations.data());
+#else
+    (void)firstAttachment;
+    (void)equations;
+    assert(false && "VK_EXT_extended_dynamic_state3 not supported by headers");
+#endif
+}
+
+void VulkanRenderPassCommandRecorder::setColorWriteMasks(uint32_t firstAttachment, const std::vector<ColorComponentFlags> &colorWriteMasks)
+{
+#if defined(VK_EXT_extended_dynamic_state3)
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    assert(device->vkCmdSetColorWriteMaskEXT && "VK_EXT_extended_dynamic_state3 not enabled on device");
+
+    const uint32_t count = static_cast<uint32_t>(colorWriteMasks.size());
+    std::vector<VkColorComponentFlags> masks(count);
+    for (uint32_t i = 0; i < count; ++i)
+        masks[i] = static_cast<VkColorComponentFlags>(colorWriteMasks[i].toInt());
+
+    device->vkCmdSetColorWriteMaskEXT(commandBuffer, firstAttachment, count, masks.data());
+#else
+    (void)firstAttachment;
+    (void)colorWriteMasks;
+    assert(false && "VK_EXT_extended_dynamic_state3 not supported by headers");
+#endif
+}
+
+void VulkanRenderPassCommandRecorder::setLogicOp(LogicOperation op)
+{
+#if defined(VK_EXT_extended_dynamic_state2)
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    assert(device->vkCmdSetLogicOpEXT && "VK_EXT_extended_dynamic_state2 not enabled on device");
+    device->vkCmdSetLogicOpEXT(commandBuffer, logicOperationToVkLogicOp(op));
+#else
+    (void)op;
+    assert(false && "VK_EXT_extended_dynamic_state2 not supported by headers");
+#endif
+}
+
+void VulkanRenderPassCommandRecorder::setLogicOpEnabled(bool enabled)
+{
+#if defined(VK_EXT_extended_dynamic_state3)
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    assert(device->vkCmdSetLogicOpEnableEXT && "VK_EXT_extended_dynamic_state3 not enabled on device");
+    device->vkCmdSetLogicOpEnableEXT(commandBuffer, enabled ? VK_TRUE : VK_FALSE);
+#else
+    (void)enabled;
+    assert(false && "VK_EXT_extended_dynamic_state3 not supported by headers");
+#endif
+}
+
+void VulkanRenderPassCommandRecorder::setStencilTestEnabled(bool enabled)
+{
+#if defined(VK_EXT_extended_dynamic_state)
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    assert(device->vkCmdSetStencilTestEnableEXT && "VK_EXT_extended_dynamic_state not enabled on device");
+    device->vkCmdSetStencilTestEnableEXT(commandBuffer, enabled ? VK_TRUE : VK_FALSE);
+#else
+    (void)enabled;
+    assert(false && "VK_EXT_extended_dynamic_state not supported by headers");
+#endif
+}
+
+void VulkanRenderPassCommandRecorder::setStencilOp(StencilFaceFlags faceMask,
+                                                   StencilOperation failOp,
+                                                   StencilOperation passOp,
+                                                   StencilOperation depthFailOp,
+                                                   CompareOperation compareOp)
+{
+#if defined(VK_EXT_extended_dynamic_state)
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    assert(device->vkCmdSetStencilOpEXT && "VK_EXT_extended_dynamic_state not enabled on device");
+    device->vkCmdSetStencilOpEXT(commandBuffer,
+                                 stencilFaceToVkStencilFace(faceMask),
+                                 stencilOperationToVkStencilOp(failOp),
+                                 stencilOperationToVkStencilOp(passOp),
+                                 stencilOperationToVkStencilOp(depthFailOp),
+                                 compareOperationToVkCompareOp(compareOp));
+#else
+    (void)faceMask;
+    (void)failOp;
+    (void)passOp;
+    (void)depthFailOp;
+    (void)compareOp;
+    assert(false && "VK_EXT_extended_dynamic_state not supported by headers");
+#endif
+}
+
+void VulkanRenderPassCommandRecorder::setScissorWithCount(const std::vector<Rect2D> &scissors)
+{
+    if (scissors.empty())
+        return;
+
+#if defined(VK_EXT_extended_dynamic_state)
+    if (auto *device = vulkanResourceManager->getDevice(deviceHandle); device->vkCmdSetScissorWithCountEXT) {
+        const uint32_t count = static_cast<uint32_t>(scissors.size());
+        std::vector<VkRect2D> vkScissors;
+        vkScissors.reserve(count);
+        for (const auto &scissor : scissors) {
+            vkScissors.push_back(VkRect2D{
+                    .offset = { scissor.offset.x, scissor.offset.y },
+                    .extent = { scissor.extent.width, scissor.extent.height } });
+        }
+        device->vkCmdSetScissorWithCountEXT(commandBuffer, count, vkScissors.data());
+        return;
+    }
+#endif
+
+    VkRect2D vkScissor = {
+        .offset = { scissors.front().offset.x, scissors.front().offset.y },
+        .extent = { scissors.front().extent.width, scissors.front().extent.height }
+    };
+    vkCmdSetScissor(commandBuffer, 0, 1, &vkScissor);
+}
+
+void VulkanRenderPassCommandRecorder::setViewportWithCount(const std::vector<Viewport> &viewports)
+{
+    if (viewports.empty())
+        return;
+
+#if defined(VK_EXT_extended_dynamic_state)
+    if (auto *device = vulkanResourceManager->getDevice(deviceHandle); device->vkCmdSetViewportWithCountEXT) {
+        const uint32_t count = static_cast<uint32_t>(viewports.size());
+        std::vector<VkViewport> vkViewports;
+        vkViewports.reserve(count);
+        for (const auto &viewport : viewports) {
+            vkViewports.push_back(VkViewport{
+                    .x = viewport.x,
+                    .y = viewport.y,
+                    .width = viewport.width,
+                    .height = viewport.height,
+                    .minDepth = viewport.minDepth,
+                    .maxDepth = viewport.maxDepth });
+        }
+        device->vkCmdSetViewportWithCountEXT(commandBuffer, count, vkViewports.data());
+        return;
+    }
+#endif
+
+    VkViewport vkViewport = {
+        .x = viewports.front().x,
+        .y = viewports.front().y,
+        .width = viewports.front().width,
+        .height = viewports.front().height,
+        .minDepth = viewports.front().minDepth,
+        .maxDepth = viewports.front().maxDepth
+    };
+    vkCmdSetViewport(commandBuffer, 0, 1, &vkViewport);
+}
+
+void VulkanRenderPassCommandRecorder::setVertexInput(const std::vector<VertexBufferLayout> &bindings,
+                                                     const std::vector<VertexAttribute> &attributes)
+{
+#if defined(VK_EXT_vertex_input_dynamic_state)
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    assert(device->vkCmdSetVertexInputEXT && "VK_EXT_vertex_input_dynamic_state not enabled on device");
+
+    const uint32_t bindingCount = static_cast<uint32_t>(bindings.size());
+    std::vector<VkVertexInputBindingDescription2EXT> vkBindings(bindingCount);
+    for (uint32_t i = 0; i < bindingCount; ++i) {
+        const auto &binding = bindings[i];
+        vkBindings[i] = {
+            .sType = VK_STRUCTURE_TYPE_VERTEX_INPUT_BINDING_DESCRIPTION_2_EXT,
+            .pNext = nullptr,
+            .binding = binding.binding,
+            .stride = binding.stride,
+            .inputRate = vertexRateToVkVertexInputRate(binding.inputRate),
+            .divisor = 1
+        };
+    }
+
+    const uint32_t attributeCount = static_cast<uint32_t>(attributes.size());
+    std::vector<VkVertexInputAttributeDescription2EXT> vkAttributes(attributeCount);
+    for (uint32_t i = 0; i < attributeCount; ++i) {
+        const auto &attribute = attributes[i];
+        vkAttributes[i] = {
+            .sType = VK_STRUCTURE_TYPE_VERTEX_INPUT_ATTRIBUTE_DESCRIPTION_2_EXT,
+            .pNext = nullptr,
+            .location = attribute.location,
+            .binding = attribute.binding,
+            .format = formatToVkFormat(attribute.format),
+            .offset = static_cast<uint32_t>(attribute.offset)
+        };
+    }
+
+    device->vkCmdSetVertexInputEXT(commandBuffer,
+                                   bindingCount,
+                                   vkBindings.data(),
+                                   attributeCount,
+                                   vkAttributes.data());
+#else
+    (void)bindings;
+    (void)attributes;
+    assert(false && "VK_EXT_vertex_input_dynamic_state not supported by headers");
+#endif
 }
 
 void VulkanRenderPassCommandRecorder::draw(const DrawCommand &drawCommand) const

@@ -832,6 +832,12 @@ enum class PrimitiveTopology {
     MaxEnum = 0x7fffffff
 };
 
+enum class TessellationDomainOrigin {
+    UpperLeft = 0,
+    LowerLeft = 1,
+    MaxEnum = 0x7fffffff
+};
+
 enum class CullModeFlagBits {
     None = 0,
     FrontBit = 0x00000001,
@@ -963,6 +969,26 @@ enum class BlendFactor {
     OneMinusSrc1Color = 16,
     Src1Alpha = 17,
     OneMinusSrc1Alpha = 18,
+    MaxEnum = 0x7fffffff
+};
+
+enum class LogicOperation {
+    Clear = 0,
+    And = 1,
+    AndReverse = 2,
+    Copy = 3,
+    AndInverted = 4,
+    NoOp = 5,
+    Xor = 6,
+    Or = 7,
+    Nor = 8,
+    Equivalent = 9,
+    Invert = 10,
+    OrReverse = 11,
+    CopyInverted = 12,
+    OrInverted = 13,
+    Nand = 14,
+    Set = 15,
     MaxEnum = 0x7fffffff
 };
 

@@ -154,6 +154,43 @@ struct KDGPU_EXPORT VulkanDevice {
     PFN_vkCmdDrawMeshTasksIndirectEXT vkCmdDrawMeshTasksIndirectEXT{ nullptr };
 #endif
 
+#if defined(VK_EXT_extended_dynamic_state)
+    PFN_vkCmdBindVertexBuffers2EXT vkCmdBindVertexBuffers2EXT{ nullptr };
+    PFN_vkCmdSetFrontFaceEXT vkCmdSetFrontFaceEXT{ nullptr };
+    PFN_vkCmdSetPrimitiveTopologyEXT vkCmdSetPrimitiveTopologyEXT{ nullptr };
+    PFN_vkCmdSetViewportWithCountEXT vkCmdSetViewportWithCountEXT{ nullptr };
+    PFN_vkCmdSetScissorWithCountEXT vkCmdSetScissorWithCountEXT{ nullptr };
+    PFN_vkCmdSetDepthBoundsTestEnableEXT vkCmdSetDepthBoundsTestEnableEXT{ nullptr };
+    PFN_vkCmdSetStencilTestEnableEXT vkCmdSetStencilTestEnableEXT{ nullptr };
+    PFN_vkCmdSetStencilOpEXT vkCmdSetStencilOpEXT{ nullptr };
+#endif
+
+#if defined(VK_EXT_extended_dynamic_state2)
+    PFN_vkCmdSetPatchControlPointsEXT vkCmdSetPatchControlPointsEXT{ nullptr };
+    PFN_vkCmdSetRasterizerDiscardEnableEXT vkCmdSetRasterizerDiscardEnableEXT{ nullptr };
+    PFN_vkCmdSetDepthBiasEnableEXT vkCmdSetDepthBiasEnableEXT{ nullptr };
+    PFN_vkCmdSetLogicOpEXT vkCmdSetLogicOpEXT{ nullptr };
+    PFN_vkCmdSetPrimitiveRestartEnableEXT vkCmdSetPrimitiveRestartEnableEXT{ nullptr };
+#endif
+
+#if defined(VK_EXT_extended_dynamic_state3)
+    PFN_vkCmdSetAlphaToCoverageEnableEXT vkCmdSetAlphaToCoverageEnableEXT{ nullptr };
+    PFN_vkCmdSetAlphaToOneEnableEXT vkCmdSetAlphaToOneEnableEXT{ nullptr };
+    PFN_vkCmdSetColorBlendEnableEXT vkCmdSetColorBlendEnableEXT{ nullptr };
+    PFN_vkCmdSetColorBlendEquationEXT vkCmdSetColorBlendEquationEXT{ nullptr };
+    PFN_vkCmdSetColorWriteMaskEXT vkCmdSetColorWriteMaskEXT{ nullptr };
+    PFN_vkCmdSetDepthClampEnableEXT vkCmdSetDepthClampEnableEXT{ nullptr };
+    PFN_vkCmdSetLogicOpEnableEXT vkCmdSetLogicOpEnableEXT{ nullptr };
+    PFN_vkCmdSetRasterizationSamplesEXT vkCmdSetRasterizationSamplesEXT{ nullptr };
+    PFN_vkCmdSetSampleMaskEXT vkCmdSetSampleMaskEXT{ nullptr };
+    PFN_vkCmdSetTessellationDomainOriginEXT vkCmdSetTessellationDomainOriginEXT{ nullptr };
+    PFN_vkCmdSetPolygonModeEXT vkCmdSetPolygonModeEXT{ nullptr };
+#endif
+
+#if defined(VK_EXT_vertex_input_dynamic_state)
+    PFN_vkCmdSetVertexInputEXT vkCmdSetVertexInputEXT{ nullptr };
+#endif
+
 #if defined(VK_KHR_sampler_ycbcr_conversion)
     PFN_vkCreateSamplerYcbcrConversionKHR vkCreateSamplerYcbcrConversionKHR{ nullptr };
     PFN_vkDestroySamplerYcbcrConversionKHR vkDestroySamplerYcbcrConversionKHR{ nullptr };

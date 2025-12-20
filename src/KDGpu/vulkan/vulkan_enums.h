@@ -68,6 +68,9 @@ VertexRate vkVertexInputRateToVertexRate(VkVertexInputRate rate);
 VkPrimitiveTopology primitiveTopologyToVkPrimitiveTopology(PrimitiveTopology topology);
 PrimitiveTopology vkPrimitiveTopologyToPrimitiveTopology(VkPrimitiveTopology topology);
 
+VkTessellationDomainOrigin tessellationDomainOriginToVkTessellationDomainOrigin(TessellationDomainOrigin origin);
+TessellationDomainOrigin vkTessellationDomainOriginToTessellationDomainOrigin(VkTessellationDomainOrigin origin);
+
 VkPolygonMode polygonModeToVkPolygonMode(PolygonMode mode);
 PolygonMode vkPolygonModeToPolygonMode(VkPolygonMode mode);
 
@@ -88,6 +91,9 @@ BlendFactor vkBlendFactorToBlendFactor(VkBlendFactor factor);
 
 VkBlendOp blendOperationToVkBlendOp(BlendOperation op);
 BlendOperation vkBlendOpToBlendOperation(VkBlendOp op);
+
+VkLogicOp logicOperationToVkLogicOp(LogicOperation op);
+LogicOperation vkLogicOpToLogicOperation(VkLogicOp op);
 
 VkAttachmentLoadOp attachmentLoadOperationToVkAttachmentLoadOp(AttachmentLoadOperation op);
 AttachmentLoadOperation vkAttachmentLoadOperationToAttachmentLoadOperation(VkAttachmentLoadOp op);

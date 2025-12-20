@@ -67,6 +67,12 @@ void RenderPassCommandRecorder::setVertexBuffer(uint32_t index, const Handle<Buf
     apiRenderPassCommandRecorder->setVertexBuffer(index, buffer, offset);
 }
 
+void RenderPassCommandRecorder::setVertexBuffers(uint32_t firstBinding, const std::vector<VertexBufferBinding> &bindings)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setVertexBuffers(firstBinding, bindings);
+}
+
 void RenderPassCommandRecorder::setIndexBuffer(const Handle<Buffer_t> &buffer, DeviceSize offset, IndexType indexType)
 {
     auto *apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
@@ -118,6 +124,155 @@ void RenderPassCommandRecorder::setDepthCompareOp(CompareOperation op)
 {
     auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
     apiRenderPassCommandRecorder->setDepthCompareOp(op);
+}
+
+void RenderPassCommandRecorder::setDepthBiasEnabled(bool enabled)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setDepthBiasEnabled(enabled);
+}
+
+void RenderPassCommandRecorder::setDepthBoundsTestEnabled(bool enabled)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setDepthBoundsTestEnabled(enabled);
+}
+
+void RenderPassCommandRecorder::setDepthClampEnabled(bool enabled)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setDepthClampEnabled(enabled);
+}
+
+void RenderPassCommandRecorder::setFrontFace(FrontFace frontFace)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setFrontFace(frontFace);
+}
+
+void RenderPassCommandRecorder::setPolygonMode(PolygonMode polygonMode)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setPolygonMode(polygonMode);
+}
+
+void RenderPassCommandRecorder::setPrimitiveRestartEnabled(bool enabled)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setPrimitiveRestartEnabled(enabled);
+}
+
+void RenderPassCommandRecorder::setPrimitiveTopology(PrimitiveTopology topology)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setPrimitiveTopology(topology);
+}
+
+void RenderPassCommandRecorder::setRasterizerDiscardEnabled(bool enabled)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setRasterizerDiscardEnabled(enabled);
+}
+
+void RenderPassCommandRecorder::setTessellationDomainOrigin(TessellationDomainOrigin origin)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setTessellationDomainOrigin(origin);
+}
+
+void RenderPassCommandRecorder::setPatchControlPoints(uint32_t controlPoints)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setPatchControlPoints(controlPoints);
+}
+
+void RenderPassCommandRecorder::setRasterizationSamples(SampleCountFlagBits samples)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setRasterizationSamples(samples);
+}
+
+void RenderPassCommandRecorder::setSampleMask(SampleCountFlagBits samples, const std::vector<SampleMask> &sampleMasks)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setSampleMask(samples, sampleMasks);
+}
+
+void RenderPassCommandRecorder::setAlphaToCoverageEnabled(bool enabled)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setAlphaToCoverageEnabled(enabled);
+}
+
+void RenderPassCommandRecorder::setAlphaToOneEnabled(bool enabled)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setAlphaToOneEnabled(enabled);
+}
+
+void RenderPassCommandRecorder::setColorBlendEnabled(uint32_t firstAttachment, const std::vector<bool> &enables)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setColorBlendEnabled(firstAttachment, enables);
+}
+
+void RenderPassCommandRecorder::setColorBlendEquations(uint32_t firstAttachment, const std::vector<ColorBlendEquation> &equations)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setColorBlendEquations(firstAttachment, equations);
+}
+
+void RenderPassCommandRecorder::setColorWriteMasks(uint32_t firstAttachment, const std::vector<ColorComponentFlags> &colorWriteMasks)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setColorWriteMasks(firstAttachment, colorWriteMasks);
+}
+
+void RenderPassCommandRecorder::setLogicOp(LogicOperation op)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setLogicOp(op);
+}
+
+void RenderPassCommandRecorder::setLogicOpEnabled(bool enabled)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setLogicOpEnabled(enabled);
+}
+
+void RenderPassCommandRecorder::setStencilTestEnabled(bool enabled)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setStencilTestEnabled(enabled);
+}
+
+void RenderPassCommandRecorder::setStencilOp(StencilFaceFlags faceMask,
+                                             StencilOperation failOp,
+                                             StencilOperation passOp,
+                                             StencilOperation depthFailOp,
+                                             CompareOperation compareOp)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setStencilOp(faceMask, failOp, passOp, depthFailOp, compareOp);
+}
+
+void RenderPassCommandRecorder::setScissorWithCount(const std::vector<Rect2D> &scissors)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setScissorWithCount(scissors);
+}
+
+void RenderPassCommandRecorder::setViewportWithCount(const std::vector<Viewport> &viewports)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setViewportWithCount(viewports);
+}
+
+void RenderPassCommandRecorder::setVertexInput(const std::vector<VertexBufferLayout> &bindings,
+                                               const std::vector<VertexAttribute> &attributes)
+{
+    auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setVertexInput(bindings, attributes);
 }
 
 void RenderPassCommandRecorder::end()

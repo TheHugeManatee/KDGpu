@@ -14,6 +14,7 @@
 #include <KDGpu/handle.h>
 #include <KDGpu/kdgpu_export.h>
 #include <KDGpu/graphics_api.h>
+#include <KDGpu/graphics_pipeline_options.h>
 
 #include <span>
 #include <optional>
@@ -75,6 +76,22 @@ struct DrawMeshIndirectCommand {
     uint32_t stride{ 0 };
 };
 
+struct VertexBufferBinding {
+    Handle<Buffer_t> buffer;
+    DeviceSize offset{ 0 };
+    DeviceSize size{ WholeSize };
+    DeviceSize stride{ 0 };
+};
+
+struct ColorBlendEquation {
+    BlendFactor srcColorBlendFactor{ BlendFactor::One };
+    BlendFactor dstColorBlendFactor{ BlendFactor::Zero };
+    BlendOperation colorBlendOp{ BlendOperation::Add };
+    BlendFactor srcAlphaBlendFactor{ BlendFactor::One };
+    BlendFactor dstAlphaBlendFactor{ BlendFactor::Zero };
+    BlendOperation alphaBlendOp{ BlendOperation::Add };
+};
+
 /**
  * @brief RenderPassCommandRecorder
  * @ingroup public
@@ -101,6 +118,7 @@ public:
 
     // TODO: Add overload for setting many vertex buffers at once
     void setVertexBuffer(uint32_t index, const Handle<Buffer_t> &buffer, DeviceSize offset = 0);
+    void setVertexBuffers(uint32_t firstBinding, const std::vector<VertexBufferBinding> &bindings);
     void setIndexBuffer(const Handle<Buffer_t> &buffer, DeviceSize offset = 0, IndexType indexType = IndexType::Uint32);
 
     void setBindGroup(uint32_t group,
@@ -115,6 +133,35 @@ public:
     void setDepthTestEnabled(bool enabled);
     void setDepthWriteEnabled(bool enabled);
     void setDepthCompareOp(CompareOperation op);
+    void setDepthBiasEnabled(bool enabled);
+    void setDepthBoundsTestEnabled(bool enabled);
+    void setDepthClampEnabled(bool enabled);
+    void setFrontFace(FrontFace frontFace);
+    void setPolygonMode(PolygonMode polygonMode);
+    void setPrimitiveRestartEnabled(bool enabled);
+    void setPrimitiveTopology(PrimitiveTopology topology);
+    void setRasterizerDiscardEnabled(bool enabled);
+    void setTessellationDomainOrigin(TessellationDomainOrigin origin);
+    void setPatchControlPoints(uint32_t controlPoints);
+    void setRasterizationSamples(SampleCountFlagBits samples);
+    void setSampleMask(SampleCountFlagBits samples, const std::vector<SampleMask> &sampleMasks);
+    void setAlphaToCoverageEnabled(bool enabled);
+    void setAlphaToOneEnabled(bool enabled);
+    void setColorBlendEnabled(uint32_t firstAttachment, const std::vector<bool> &enables);
+    void setColorBlendEquations(uint32_t firstAttachment, const std::vector<ColorBlendEquation> &equations);
+    void setColorWriteMasks(uint32_t firstAttachment, const std::vector<ColorComponentFlags> &colorWriteMasks);
+    void setLogicOp(LogicOperation op);
+    void setLogicOpEnabled(bool enabled);
+    void setStencilTestEnabled(bool enabled);
+    void setStencilOp(StencilFaceFlags faceMask,
+                      StencilOperation failOp,
+                      StencilOperation passOp,
+                      StencilOperation depthFailOp,
+                      CompareOperation compareOp);
+    void setScissorWithCount(const std::vector<Rect2D> &scissors);
+    void setViewportWithCount(const std::vector<Viewport> &viewports);
+    void setVertexInput(const std::vector<VertexBufferLayout> &bindings,
+                        const std::vector<VertexAttribute> &attributes);
 
     void draw(const DrawCommand &drawCommand);
     void draw(std::span<const DrawCommand> drawCommands);

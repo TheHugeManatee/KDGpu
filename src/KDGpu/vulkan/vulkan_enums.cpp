@@ -200,6 +200,16 @@ PrimitiveTopology vkPrimitiveTopologyToPrimitiveTopology(VkPrimitiveTopology top
     return static_cast<PrimitiveTopology>(static_cast<uint32_t>(topology));
 }
 
+VkTessellationDomainOrigin tessellationDomainOriginToVkTessellationDomainOrigin(TessellationDomainOrigin origin)
+{
+    return static_cast<VkTessellationDomainOrigin>(static_cast<uint32_t>(origin));
+}
+
+TessellationDomainOrigin vkTessellationDomainOriginToTessellationDomainOrigin(VkTessellationDomainOrigin origin)
+{
+    return static_cast<TessellationDomainOrigin>(static_cast<uint32_t>(origin));
+}
+
 VkPolygonMode polygonModeToVkPolygonMode(PolygonMode mode)
 {
     return static_cast<VkPolygonMode>(static_cast<uint32_t>(mode));
@@ -258,6 +268,16 @@ VkBlendOp blendOperationToVkBlendOp(BlendOperation op)
 BlendOperation vkBlendOpToBlendOperation(VkBlendOp op)
 {
     return static_cast<BlendOperation>(static_cast<uint32_t>(op));
+}
+
+VkLogicOp logicOperationToVkLogicOp(LogicOperation op)
+{
+    return static_cast<VkLogicOp>(static_cast<uint32_t>(op));
+}
+
+LogicOperation vkLogicOpToLogicOperation(VkLogicOp op)
+{
+    return static_cast<LogicOperation>(static_cast<uint32_t>(op));
 }
 
 VkAttachmentLoadOp attachmentLoadOperationToVkAttachmentLoadOp(AttachmentLoadOperation op)

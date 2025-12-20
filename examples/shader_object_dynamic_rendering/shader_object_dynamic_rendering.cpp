@@ -264,13 +264,14 @@ void ShaderObjectDynamicRendering::initializeScene()
     }
 
     {
+        const std::vector pushConstantRanges{ m_fragmentPushConstantRange };
         auto fragmentCode = KDGpuExample::readShaderFile(fragmentShaderPath);
         ShaderObjectOptions fragmentOptions = {
             .label = "ShaderObject Fragment",
             .stage = ShaderStageFlagBits::FragmentBit,
             .nextStage = ShaderStageFlags(),
             .entryPoint = "main",
-            .pushConstantRanges = { m_fragmentPushConstantRange }
+            .pushConstantRanges = pushConstantRanges,
         };
         fragmentOptions.code = { fragmentCode.data(), fragmentCode.size() };
         fragmentOptions.bindGroupLayouts = { bindGroupLayout.handle() };

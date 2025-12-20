@@ -129,6 +129,7 @@ public:
     void setViewport(const Viewport &viewport);
     void setScissor(const Rect2D &scissor);
     void setStencilReference(StencilFaceFlags faceMask, int reference);
+    void setLineWidth(float width);
     void setCullMode(CullModeFlags cullMode);
     void setDepthTestEnabled(bool enabled);
     void setDepthWriteEnabled(bool enabled);

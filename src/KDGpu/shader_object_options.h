@@ -12,10 +12,10 @@ struct ShaderObjectOptions {
     std::string_view label;
     ShaderStageFlagBits stage;
     ShaderStageFlags nextStage;
-    std::span<uint32_t> code;
+    std::span<const uint32_t> code;
     std::string entryPoint;
     std::vector<Handle<BindGroupLayout_t>> bindGroupLayouts;
-    std::vector<PushConstantRange> pushConstantRanges;
+    std::span<const PushConstantRange> pushConstantRanges;
 };
 
 } // namespace KDGpu

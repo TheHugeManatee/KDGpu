@@ -499,55 +499,68 @@ Handle<Device_t> VulkanResourceManager::createDevice(const Handle<Adapter_t> &ad
     // Start the chain
     chainCurrent = reinterpret_cast<VkBaseOutStructure *>(&physicalDeviceFeatures2);
 
-    // Allows to use std430 for uniform buffers which gives much nicer packing of data
-    VkPhysicalDeviceUniformBufferStandardLayoutFeatures stdLayoutFeatures = {};
-    stdLayoutFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES;
-    stdLayoutFeatures.uniformBufferStandardLayout = options.requestedFeatures.uniformBufferStandardLayout;
-    addToChain(&stdLayoutFeatures);
+#if defined(VK_API_VERSION_1_1)
+    if (options.apiVersion >= VK_API_VERSION_1_1) {
+        // Enable Vulkan 1.1 features
+        VkPhysicalDeviceVulkan11Features vulkan11Features{};
+        vulkan11Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES;
+        vulkan11Features.shaderDrawParameters = true;
+        vulkan11Features.multiview = options.requestedFeatures.multiView;
+        vulkan11Features.multiviewGeometryShader = options.requestedFeatures.multiViewGeometryShader;
+        vulkan11Features.multiviewTessellationShader = options.requestedFeatures.multiViewTessellationShader;
+        addToChain(&vulkan11Features);
+    }
+#endif
 
-    // Enable multiview rendering if requested
-    VkPhysicalDeviceMultiviewFeatures multiViewFeatures{};
-    multiViewFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_FEATURES;
-    multiViewFeatures.multiview = options.requestedFeatures.multiView;
-    multiViewFeatures.multiviewGeometryShader = options.requestedFeatures.multiViewGeometryShader;
-    multiViewFeatures.multiviewTessellationShader = options.requestedFeatures.multiViewTessellationShader;
-    addToChain(&multiViewFeatures);
+#if defined(VK_API_VERSION_1_2)
+    if (options.apiVersion >= VK_API_VERSION_1_2) {
+        // Enable Vulkan 1.2 features
+        VkPhysicalDeviceVulkan12Features vulkan12Features{};
+        vulkan12Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
+        vulkan12Features.descriptorIndexing = true;
+        vulkan12Features.uniformBufferStandardLayout = options.requestedFeatures.uniformBufferStandardLayout;
 
-    // Enable Descriptor Indexing if requested
-    VkPhysicalDeviceDescriptorIndexingFeatures descriptorIndexingFeatures{};
-    descriptorIndexingFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES;
-    descriptorIndexingFeatures.shaderInputAttachmentArrayDynamicIndexing = options.requestedFeatures.shaderInputAttachmentArrayDynamicIndexing;
-    descriptorIndexingFeatures.shaderUniformTexelBufferArrayDynamicIndexing = options.requestedFeatures.shaderUniformTexelBufferArrayDynamicIndexing;
-    descriptorIndexingFeatures.shaderStorageTexelBufferArrayDynamicIndexing = options.requestedFeatures.shaderStorageTexelBufferArrayDynamicIndexing;
-    descriptorIndexingFeatures.shaderUniformBufferArrayNonUniformIndexing = options.requestedFeatures.shaderUniformBufferArrayNonUniformIndexing;
-    descriptorIndexingFeatures.shaderSampledImageArrayNonUniformIndexing = options.requestedFeatures.shaderSampledImageArrayNonUniformIndexing;
-    descriptorIndexingFeatures.shaderStorageBufferArrayNonUniformIndexing = options.requestedFeatures.shaderStorageBufferArrayNonUniformIndexing;
-    descriptorIndexingFeatures.shaderStorageImageArrayNonUniformIndexing = options.requestedFeatures.shaderStorageImageArrayNonUniformIndexing;
-    descriptorIndexingFeatures.shaderInputAttachmentArrayNonUniformIndexing = options.requestedFeatures.shaderInputAttachmentArrayNonUniformIndexing;
-    descriptorIndexingFeatures.shaderUniformTexelBufferArrayNonUniformIndexing = options.requestedFeatures.shaderUniformTexelBufferArrayNonUniformIndexing;
-    descriptorIndexingFeatures.shaderStorageTexelBufferArrayNonUniformIndexing = options.requestedFeatures.shaderStorageTexelBufferArrayNonUniformIndexing;
-    descriptorIndexingFeatures.descriptorBindingUniformBufferUpdateAfterBind = options.requestedFeatures.bindGroupBindingUniformBufferUpdateAfterBind;
-    descriptorIndexingFeatures.descriptorBindingSampledImageUpdateAfterBind = options.requestedFeatures.bindGroupBindingSampledImageUpdateAfterBind;
-    descriptorIndexingFeatures.descriptorBindingStorageImageUpdateAfterBind = options.requestedFeatures.bindGroupBindingStorageImageUpdateAfterBind;
-    descriptorIndexingFeatures.descriptorBindingStorageBufferUpdateAfterBind = options.requestedFeatures.bindGroupBindingStorageBufferUpdateAfterBind;
-    descriptorIndexingFeatures.descriptorBindingUniformTexelBufferUpdateAfterBind = options.requestedFeatures.bindGroupBindingUniformTexelBufferUpdateAfterBind;
-    descriptorIndexingFeatures.descriptorBindingStorageTexelBufferUpdateAfterBind = options.requestedFeatures.bindGroupBindingStorageTexelBufferUpdateAfterBind;
-    descriptorIndexingFeatures.descriptorBindingUpdateUnusedWhilePending = options.requestedFeatures.bindGroupBindingUpdateUnusedWhilePending;
-    descriptorIndexingFeatures.descriptorBindingPartiallyBound = options.requestedFeatures.bindGroupBindingPartiallyBound;
-    descriptorIndexingFeatures.descriptorBindingVariableDescriptorCount = options.requestedFeatures.bindGroupBindingVariableDescriptorCount;
-    descriptorIndexingFeatures.runtimeDescriptorArray = options.requestedFeatures.runtimeBindGroupArray;
-    addToChain(&descriptorIndexingFeatures);
+        vulkan12Features.shaderInputAttachmentArrayDynamicIndexing = options.requestedFeatures.shaderInputAttachmentArrayDynamicIndexing;
+        vulkan12Features.shaderUniformTexelBufferArrayDynamicIndexing = options.requestedFeatures.shaderUniformTexelBufferArrayDynamicIndexing;
+        vulkan12Features.shaderStorageTexelBufferArrayDynamicIndexing = options.requestedFeatures.shaderStorageTexelBufferArrayDynamicIndexing;
+        vulkan12Features.shaderUniformBufferArrayNonUniformIndexing = options.requestedFeatures.shaderUniformBufferArrayNonUniformIndexing;
+        vulkan12Features.shaderSampledImageArrayNonUniformIndexing = options.requestedFeatures.shaderSampledImageArrayNonUniformIndexing;
+        vulkan12Features.shaderStorageBufferArrayNonUniformIndexing = options.requestedFeatures.shaderStorageBufferArrayNonUniformIndexing;
+        vulkan12Features.shaderStorageImageArrayNonUniformIndexing = options.requestedFeatures.shaderStorageImageArrayNonUniformIndexing;
+        vulkan12Features.shaderInputAttachmentArrayNonUniformIndexing = options.requestedFeatures.shaderInputAttachmentArrayNonUniformIndexing;
+        vulkan12Features.shaderUniformTexelBufferArrayNonUniformIndexing = options.requestedFeatures.shaderUniformTexelBufferArrayNonUniformIndexing;
+        vulkan12Features.shaderStorageTexelBufferArrayNonUniformIndexing = options.requestedFeatures.shaderStorageTexelBufferArrayNonUniformIndexing;
+        vulkan12Features.descriptorBindingUniformBufferUpdateAfterBind = options.requestedFeatures.bindGroupBindingUniformBufferUpdateAfterBind;
+        vulkan12Features.descriptorBindingSampledImageUpdateAfterBind = options.requestedFeatures.bindGroupBindingSampledImageUpdateAfterBind;
+        vulkan12Features.descriptorBindingStorageImageUpdateAfterBind = options.requestedFeatures.bindGroupBindingStorageImageUpdateAfterBind;
+        vulkan12Features.descriptorBindingStorageBufferUpdateAfterBind = options.requestedFeatures.bindGroupBindingStorageBufferUpdateAfterBind;
+        vulkan12Features.descriptorBindingUniformTexelBufferUpdateAfterBind = options.requestedFeatures.bindGroupBindingUniformTexelBufferUpdateAfterBind;
+        vulkan12Features.descriptorBindingStorageTexelBufferUpdateAfterBind = options.requestedFeatures.bindGroupBindingStorageTexelBufferUpdateAfterBind;
+        vulkan12Features.descriptorBindingUpdateUnusedWhilePending = options.requestedFeatures.bindGroupBindingUpdateUnusedWhilePending;
+        vulkan12Features.descriptorBindingPartiallyBound = options.requestedFeatures.bindGroupBindingPartiallyBound;
+        vulkan12Features.descriptorBindingVariableDescriptorCount = options.requestedFeatures.bindGroupBindingVariableDescriptorCount;
+        vulkan12Features.runtimeDescriptorArray = options.requestedFeatures.runtimeBindGroupArray;
+        vulkan12Features.bufferDeviceAddress = options.requestedFeatures.bufferDeviceAddress;
+        addToChain(&vulkan12Features);
+    }
+#endif
+
+#if defined(VK_API_VERSION_1_3)
+    if (options.apiVersion >= VK_API_VERSION_1_3) {
+        // Enable Vulkan 1.3 features
+        VkPhysicalDeviceVulkan13Features vulkan13Features{};
+        vulkan13Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES;
+        vulkan13Features.synchronization2 = vulkanAdapter->supportsSynchronization2;
+        vulkan13Features.dynamicRendering = options.requestedFeatures.dynamicRendering;
+        addToChain(&vulkan13Features);
+    }
+#endif
 
     // Create a Device that targets several physical devices if a group was specified.
     // We only add the device group info if we have more than one adapter.
     VkDeviceGroupDeviceCreateInfo deviceGroupInfo = {};
     deviceGroupInfo.sType = VK_STRUCTURE_TYPE_DEVICE_GROUP_DEVICE_CREATE_INFO_KHR;
     deviceGroupInfo.physicalDeviceCount = 0;
-
-    VkPhysicalDeviceBufferDeviceAddressFeatures bufferDeviceFeature{};
-    bufferDeviceFeature.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES;
-    bufferDeviceFeature.bufferDeviceAddress = options.requestedFeatures.bufferDeviceAddress;
-    addToChain(&bufferDeviceFeature);
 
 #if defined(VK_KHR_acceleration_structure)
     VkPhysicalDeviceAccelerationStructureFeaturesKHR accelerationStructureFeaturesKhr{};
@@ -644,24 +657,6 @@ Handle<Device_t> VulkanResourceManager::createDevice(const Handle<Adapter_t> &ad
 
         addToChain(&deviceGroupInfo);
     }
-
-#if defined(VK_KHR_synchronization2)
-    // Enable the VK_KHR_Synchronization2 extension features by chaining this into the createInfo chain.
-    VkPhysicalDeviceSynchronization2FeaturesKHR sync2Features = {};
-    sync2Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES_KHR;
-    sync2Features.synchronization2 = vulkanAdapter->supportsSynchronization2;
-    addToChain(&sync2Features);
-#endif
-
-#if defined(VK_KHR_dynamic_rendering)
-    if (options.requestedFeatures.dynamicRendering) {
-        // Enable dynamic rendering
-        VkPhysicalDeviceDynamicRenderingFeaturesKHR dynamicRenderingFeatures{};
-        dynamicRenderingFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR;
-        dynamicRenderingFeatures.dynamicRendering = options.requestedFeatures.dynamicRendering;
-        addToChain(&dynamicRenderingFeatures);
-    }
-#endif
 
 #if defined(VK_KHR_dynamic_rendering_local_read)
     if (options.requestedFeatures.dynamicRenderingLocalRead) {

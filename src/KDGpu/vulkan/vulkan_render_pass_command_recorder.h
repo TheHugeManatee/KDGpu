@@ -48,6 +48,7 @@ struct KDGPU_EXPORT VulkanRenderPassCommandRecorder {
     void setViewport(const Viewport &viewport) const;
     void setScissor(const Rect2D &scissor) const;
     void setStencilReference(StencilFaceFlags faceMask, int reference) const;
+    void setLineWidth(float width) const;
     void setCullMode(CullModeFlags cull_mode);
     void setDepthTestEnabled(bool enabled);
     void setDepthWriteEnabled(bool enabled);

@@ -191,6 +191,12 @@ void VulkanRenderPassCommandRecorder::setStencilReference(const StencilFaceFlags
 {
     vkCmdSetStencilReference(commandBuffer, stencilFaceToVkStencilFace(faceMask), reference);
 }
+
+void VulkanRenderPassCommandRecorder::setLineWidth(float width) const
+{
+    vkCmdSetLineWidth(commandBuffer, width);
+}
+
 void VulkanRenderPassCommandRecorder::setCullMode(CullModeFlags cullMode)
 {
 #if defined(VK_EXT_extended_dynamic_state)

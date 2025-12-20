@@ -105,6 +105,12 @@ void RenderPassCommandRecorder::setStencilReference(const StencilFaceFlags faceM
     apiRenderPassCommandRecorder->setStencilReference(faceMask, reference);
 }
 
+void RenderPassCommandRecorder::setLineWidth(float width)
+{
+    auto *apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setLineWidth(width);
+}
+
 void RenderPassCommandRecorder::setCullMode(CullModeFlags cullMode)
 {
     auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);

@@ -13,6 +13,7 @@
 #include <KDGpu/gpu_core.h>
 #include <KDGpu/handle.h>
 #include <KDGpu/kdgpu_export.h>
+#include <KDGpu/adapter_swapchain_properties.h>
 
 #include <KDGpu/utils/logging.h>
 
@@ -25,7 +26,7 @@ struct fmt::formatter<KDGpu::AdapterDeviceType> {
     }
 
     template<typename FormatContext>
-    auto format(KDGpu::AdapterDeviceType const &deviceType, FormatContext &ctx)
+    auto format(KDGpu::AdapterDeviceType const &deviceType, FormatContext &ctx) const
     {
         return fmt::format_to(ctx.out(), KDGpu::adapterDeviceTypeToString(deviceType));
     }
@@ -40,7 +41,7 @@ struct fmt::formatter<KDGpu::SurfaceCapabilities> {
     }
 
     template<typename FormatContext>
-    auto format(KDGpu::SurfaceCapabilities const &capabilities, FormatContext &ctx)
+    auto format(KDGpu::SurfaceCapabilities const &capabilities, FormatContext &ctx) const
     {
         return fmt::format_to(ctx.out(), KDGpu::surfaceCapabilitiesToString(capabilities));
     }
@@ -55,7 +56,7 @@ struct fmt::formatter<KDGpu::PresentMode> {
     }
 
     template<typename FormatContext>
-    auto format(KDGpu::PresentMode const &mode, FormatContext &ctx)
+    auto format(KDGpu::PresentMode const &mode, FormatContext &ctx) const
     {
         return fmt::format_to(ctx.out(), KDGpu::presentModeToString(mode));
     }
@@ -70,7 +71,7 @@ struct fmt::formatter<KDGpu::SurfaceTransformFlagBits> {
     }
 
     template<typename FormatContext>
-    auto format(KDGpu::SurfaceTransformFlagBits const &bits, FormatContext &ctx)
+    auto format(KDGpu::SurfaceTransformFlagBits const &bits, FormatContext &ctx) const
     {
         return fmt::format_to(ctx.out(), KDGpu::surfaceTransformFlagBitsToString(bits));
     }
@@ -87,7 +88,7 @@ struct fmt::formatter<KDGpu::Handle<T>> {
     }
 
     template<typename FormatContext>
-    auto format(HandleType const &handle, FormatContext &ctx)
+    auto format(HandleType const &handle, FormatContext &ctx) const
     {
         return fmt::format_to(ctx.out(), "Handle(generation={}, index={})", handle.generation(), handle.index());
     }

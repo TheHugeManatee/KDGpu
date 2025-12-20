@@ -85,6 +85,8 @@ protected:
     void clearImGuiOverlayDrawFunctions();
     void recreateImGuiOverlay();
 
+    virtual KDGpu::AdapterAndDevice createAdapterAndDevice(const KDGpu::Surface &surface);
+
     void onAttached() override;
     void onDetached() override;
     void update() override;

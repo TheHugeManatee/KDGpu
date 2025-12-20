@@ -204,6 +204,11 @@ void ExampleEngineLayer::clearImGuiOverlayDrawFunctions()
     m_imGuiOverlayDrawFunctions.clear();
 }
 
+AdapterAndDevice ExampleEngineLayer::createAdapterAndDevice(const Surface &surface)
+{
+    return m_instance.createDefaultDevice(surface);
+}
+
 void ExampleEngineLayer::onAttached()
 {
     m_window = std::make_unique<KDGpuKDGui::View>();
@@ -220,7 +225,7 @@ void ExampleEngineLayer::onAttached()
     m_surface = m_window->createSurface(m_instance);
 
     // Create a device and a queue to use
-    auto defaultDevice = m_instance.createDefaultDevice(m_surface);
+    auto defaultDevice = createAdapterAndDevice(m_surface);
     m_adapter = defaultDevice.adapter;
     m_device = std::move(defaultDevice.device);
     m_queue = m_device.queues()[0];

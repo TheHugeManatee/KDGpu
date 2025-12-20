@@ -81,6 +81,7 @@ if(TARGET KDGpu::KDGpuExample)
     add_subdirectory(hybrid_raster_rt)
     add_subdirectory(host_image_copy_texture)
     add_subdirectory(wireframe_geometry)
+    add_subdirectory(shader_object_dynamic_rendering)
 
     if(KDGPU_HLSL_SUPPORT)
         add_subdirectory(hello_triangle_hlsl)

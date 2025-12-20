@@ -42,6 +42,7 @@ VulkanDevice::VulkanDevice(VkDevice _device,
 {
     VulkanAdapter *vulkanAdapter = vulkanResourceManager->getAdapter(adapterHandle);
     VulkanInstance *vulkanInstance = vulkanResourceManager->getInstance(vulkanAdapter->instanceHandle);
+    const auto features = vulkanAdapter->queryAdapterFeatures();
 
     // Create an allocator for the device
     allocator = createMemoryAllocator();
@@ -81,7 +82,7 @@ VulkanDevice::VulkanDevice(VkDevice _device,
 #endif
 
 #if defined(VK_KHR_acceleration_structure)
-    if (vulkanAdapter->queryAdapterFeatures().accelerationStructures) {
+    if (features.accelerationStructures) {
         const auto adapterExtensions = vulkanAdapter->extensions();
         for (const auto &extension : adapterExtensions) {
             if (extension.name == VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME) {
@@ -110,7 +111,7 @@ VulkanDevice::VulkanDevice(VkDevice _device,
 #endif
 
 #if defined(VK_KHR_ray_tracing_pipeline)
-    if (vulkanAdapter->queryAdapterFeatures().rayTracingPipeline) {
+    if (features.rayTracingPipeline) {
         const auto adapterExtensions = vulkanAdapter->extensions();
         for (const auto &extension : adapterExtensions) {
             if (extension.name == VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME) {
@@ -132,7 +133,7 @@ VulkanDevice::VulkanDevice(VkDevice _device,
 #endif
 
 #if defined(VK_EXT_mesh_shader)
-    if (vulkanAdapter->queryAdapterFeatures().taskShader && vulkanAdapter->queryAdapterFeatures().meshShader) {
+    if (features.taskShader && features.meshShader) {
         const auto adapterExtensions = vulkanAdapter->extensions();
         for (const auto &extension : adapterExtensions) {
             if (extension.name == VK_EXT_MESH_SHADER_EXTENSION_NAME) {
@@ -176,7 +177,7 @@ VulkanDevice::VulkanDevice(VkDevice _device,
     }
 
 #if defined(VK_EXT_host_image_copy)
-    if (vulkanAdapter->queryAdapterFeatures().hostImageCopy) {
+    if (features.hostImageCopy) {
         for (const auto &extension : adapterExtensions) {
             if (extension.name == VK_EXT_HOST_IMAGE_COPY_EXTENSION_NAME) {
                 this->vkTransitionImageLayout = (PFN_vkTransitionImageLayoutEXT)vkGetDeviceProcAddr(device, "vkTransitionImageLayoutEXT");
@@ -192,6 +193,10 @@ VulkanDevice::VulkanDevice(VkDevice _device,
     for (const auto &extension : adapterExtensions) {
         if (extension.name == VK_EXT_EXTENDED_DYNAMIC_STATE_EXTENSION_NAME) {
             this->vkCmdBindVertexBuffers2EXT = reinterpret_cast<PFN_vkCmdBindVertexBuffers2EXT>(vkGetDeviceProcAddr(device, "vkCmdBindVertexBuffers2EXT"));
+            this->vkCmdSetCullModeEXT = reinterpret_cast<PFN_vkCmdSetCullModeEXT>(vkGetDeviceProcAddr(device, "vkCmdSetCullModeEXT"));
+            this->vkCmdSetDepthTestEnableEXT = reinterpret_cast<PFN_vkCmdSetDepthTestEnableEXT>(vkGetDeviceProcAddr(device, "vkCmdSetDepthTestEnableEXT"));
+            this->vkCmdSetDepthWriteEnableEXT = reinterpret_cast<PFN_vkCmdSetDepthWriteEnableEXT>(vkGetDeviceProcAddr(device, "vkCmdSetDepthWriteEnableEXT"));
+            this->vkCmdSetDepthCompareOpEXT = reinterpret_cast<PFN_vkCmdSetDepthCompareOpEXT>(vkGetDeviceProcAddr(device, "vkCmdSetDepthCompareOpEXT"));
             this->vkCmdSetFrontFaceEXT = reinterpret_cast<PFN_vkCmdSetFrontFaceEXT>(vkGetDeviceProcAddr(device, "vkCmdSetFrontFaceEXT"));
             this->vkCmdSetPrimitiveTopologyEXT = reinterpret_cast<PFN_vkCmdSetPrimitiveTopologyEXT>(vkGetDeviceProcAddr(device, "vkCmdSetPrimitiveTopologyEXT"));
             this->vkCmdSetViewportWithCountEXT = reinterpret_cast<PFN_vkCmdSetViewportWithCountEXT>(vkGetDeviceProcAddr(device, "vkCmdSetViewportWithCountEXT"));
@@ -246,7 +251,7 @@ VulkanDevice::VulkanDevice(VkDevice _device,
 #endif
 
 #if defined(VK_KHR_sampler_ycbcr_conversion)
-    if (vulkanAdapter->queryAdapterFeatures().samplerYCbCrConversion) {
+    if (features.samplerYCbCrConversion) {
         for (const auto &extension : adapterExtensions) {
             if (extension.name == VK_KHR_SAMPLER_YCBCR_CONVERSION_EXTENSION_NAME) {
                 this->vkCreateSamplerYcbcrConversionKHR = (PFN_vkCreateSamplerYcbcrConversionKHR)vkGetDeviceProcAddr(device, "vkCreateSamplerYcbcrConversionKHR");
@@ -275,9 +280,11 @@ VulkanDevice::VulkanDevice(VkDevice _device,
 #endif
 
 #if defined(VK_EXT_shader_object)
-    this->vkCreateShadersEXT = (PFN_vkCreateShadersEXT)vkGetDeviceProcAddr(device, "vkCreateShadersEXT");
-    this->vkDestroyShaderEXT = (PFN_vkDestroyShaderEXT)vkGetDeviceProcAddr(device, "vkDestroyShaderEXT");
-    this->vkCmdBindShadersEXT = (PFN_vkCmdBindShadersEXT)vkGetDeviceProcAddr(device, "vkCmdBindShadersEXT");
+    if (features.shaderObject) {
+        this->vkCreateShadersEXT = (PFN_vkCreateShadersEXT)vkGetDeviceProcAddr(device, "vkCreateShadersEXT");
+        this->vkDestroyShaderEXT = (PFN_vkDestroyShaderEXT)vkGetDeviceProcAddr(device, "vkDestroyShaderEXT");
+        this->vkCmdBindShadersEXT = (PFN_vkCmdBindShadersEXT)vkGetDeviceProcAddr(device, "vkCmdBindShadersEXT");
+    }
 #endif
 }
 

@@ -1302,7 +1302,7 @@ Handle<ShaderObject_t> VulkanResourceManager::createShaderObject(const Handle<De
         .stage = shaderStageFlagBitsToVkShaderStageFlagBits(options.stage),
         .nextStage = options.nextStage.toInt(),
         .codeType = VK_SHADER_CODE_TYPE_SPIRV_EXT,
-        .codeSize = options.code.size(),
+        .codeSize = options.code.size() * sizeof(uint32_t),
         .pCode = options.code.data(),
         .pName = options.entryPoint.c_str(),
         .setLayoutCount = bindGroupLayoutCount,

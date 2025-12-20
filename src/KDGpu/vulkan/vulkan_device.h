@@ -156,6 +156,10 @@ struct KDGPU_EXPORT VulkanDevice {
 
 #if defined(VK_EXT_extended_dynamic_state)
     PFN_vkCmdBindVertexBuffers2EXT vkCmdBindVertexBuffers2EXT{ nullptr };
+    PFN_vkCmdSetCullModeEXT vkCmdSetCullModeEXT{ nullptr };
+    PFN_vkCmdSetDepthTestEnableEXT vkCmdSetDepthTestEnableEXT{ nullptr };
+    PFN_vkCmdSetDepthWriteEnableEXT vkCmdSetDepthWriteEnableEXT{ nullptr };
+    PFN_vkCmdSetDepthCompareOpEXT vkCmdSetDepthCompareOpEXT{ nullptr };
     PFN_vkCmdSetFrontFaceEXT vkCmdSetFrontFaceEXT{ nullptr };
     PFN_vkCmdSetPrimitiveTopologyEXT vkCmdSetPrimitiveTopologyEXT{ nullptr };
     PFN_vkCmdSetViewportWithCountEXT vkCmdSetViewportWithCountEXT{ nullptr };

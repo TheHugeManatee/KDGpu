@@ -13,6 +13,7 @@
 #include <KDGpu/adapter.h>
 #include <KDGpu/device_options.h>
 #include <KDGpu/api/graphics_api_impl.h>
+#include <KDGpu/shader_object_options.h>
 #include <KDGpu/swapchain_options.h>
 
 namespace KDGpu {
@@ -159,6 +160,11 @@ ComputePipeline Device::createComputePipeline(const ComputePipelineOptions &opti
 RayTracingPipeline Device::createRayTracingPipeline(const RayTracingPipelineOptions &options)
 {
     return RayTracingPipeline(m_api, m_device, options);
+}
+
+ShaderObject Device::createShaderObject(const ShaderObjectOptions &options)
+{
+    return ShaderObject(m_api, m_device, options);
 }
 
 CommandRecorder Device::createCommandRecorder(const CommandRecorderOptions &options)

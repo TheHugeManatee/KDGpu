@@ -55,13 +55,13 @@ std::vector<Extension> VulkanAdapter::extensions() const
     uint32_t extensionCount{ 0 };
     if (vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, nullptr) != VK_SUCCESS) {
         SPDLOG_LOGGER_CRITICAL(Logger::logger(), "Unable to enumerate instance extensions");
-        return {};
+        return { };
     }
 
     std::vector<VkExtensionProperties> vkExtensions(extensionCount);
     if (vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, vkExtensions.data()) != VK_SUCCESS) {
         SPDLOG_LOGGER_CRITICAL(Logger::logger(), "Unable to query instance extensions");
-        return {};
+        return { };
     }
 
     std::vector<Extension> extensions;
@@ -84,42 +84,42 @@ AdapterProperties VulkanAdapter::queryAdapterProperties()
         chainCurrent = n;
     };
 
-    VkPhysicalDeviceProperties2 deviceProperties2{};
+    VkPhysicalDeviceProperties2 deviceProperties2{ };
     deviceProperties2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
     chainCurrent = reinterpret_cast<VkBaseOutStructure *>(&deviceProperties2);
 
-    VkPhysicalDeviceMultiviewProperties multiViewProperties{};
+    VkPhysicalDeviceMultiviewProperties multiViewProperties{ };
     multiViewProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES;
     addToChain(&multiViewProperties);
 
-    VkPhysicalDeviceDepthStencilResolveProperties depthResolveProps{};
+    VkPhysicalDeviceDepthStencilResolveProperties depthResolveProps{ };
     depthResolveProps.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_STENCIL_RESOLVE_PROPERTIES;
     addToChain(&depthResolveProps);
 
-    VkPhysicalDeviceDescriptorIndexingProperties descriptorIndexingProperties{};
+    VkPhysicalDeviceDescriptorIndexingProperties descriptorIndexingProperties{ };
     descriptorIndexingProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_PROPERTIES;
     addToChain(&descriptorIndexingProperties);
 
 #if defined(VK_KHR_ray_tracing_pipeline)
-    VkPhysicalDeviceRayTracingPipelinePropertiesKHR rayTracingProperties{};
+    VkPhysicalDeviceRayTracingPipelinePropertiesKHR rayTracingProperties{ };
     rayTracingProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_PROPERTIES_KHR;
     addToChain(&rayTracingProperties);
 #endif
 
 #if defined(VK_EXT_mesh_shader)
-    VkPhysicalDeviceMeshShaderPropertiesEXT meshShaderProperties{};
+    VkPhysicalDeviceMeshShaderPropertiesEXT meshShaderProperties{ };
     meshShaderProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_EXT;
     addToChain(&meshShaderProperties);
 #endif
 
 #if defined(VK_EXT_host_image_copy)
-    VkPhysicalDeviceHostImageCopyPropertiesEXT hostImageCopyProperties{};
+    VkPhysicalDeviceHostImageCopyPropertiesEXT hostImageCopyProperties{ };
     hostImageCopyProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_HOST_IMAGE_COPY_PROPERTIES_EXT;
     addToChain(&hostImageCopyProperties);
 #endif
 
 #if defined(VK_KHR_push_descriptor)
-    VkPhysicalDevicePushDescriptorPropertiesKHR pushDescriptorProperties{};
+    VkPhysicalDevicePushDescriptorPropertiesKHR pushDescriptorProperties{ };
     pushDescriptorProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR;
     addToChain(&pushDescriptorProperties);
 #endif
@@ -410,58 +410,58 @@ AdapterFeatures VulkanAdapter::queryAdapterFeatures()
         chainCurrent = n;
     };
 
-    VkPhysicalDeviceFeatures2 deviceFeatures2{};
+    VkPhysicalDeviceFeatures2 deviceFeatures2{ };
     deviceFeatures2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
     chainCurrent = reinterpret_cast<VkBaseOutStructure *>(&deviceFeatures2);
 
-    VkPhysicalDeviceMultiviewFeatures multiViewFeatures{};
+    VkPhysicalDeviceMultiviewFeatures multiViewFeatures{ };
     multiViewFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_FEATURES;
     addToChain(&multiViewFeatures);
 
-    VkPhysicalDeviceUniformBufferStandardLayoutFeatures stdLayoutFeatures{};
+    VkPhysicalDeviceUniformBufferStandardLayoutFeatures stdLayoutFeatures{ };
     stdLayoutFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES;
     addToChain(&stdLayoutFeatures);
 
-    VkPhysicalDeviceDescriptorIndexingFeatures deviceDescriptorIndexingFeatures{};
+    VkPhysicalDeviceDescriptorIndexingFeatures deviceDescriptorIndexingFeatures{ };
     deviceDescriptorIndexingFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES;
     addToChain(&deviceDescriptorIndexingFeatures);
 
-    VkPhysicalDeviceVulkan12Features physicalDeviceFeatures12{};
+    VkPhysicalDeviceVulkan12Features physicalDeviceFeatures12{ };
     physicalDeviceFeatures12.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
     addToChain(&physicalDeviceFeatures12);
 
 #if defined(VK_KHR_acceleration_structure)
-    VkPhysicalDeviceAccelerationStructureFeaturesKHR accelerationStructureFeaturesKhr{};
+    VkPhysicalDeviceAccelerationStructureFeaturesKHR accelerationStructureFeaturesKhr{ };
     accelerationStructureFeaturesKhr.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR;
     addToChain(&accelerationStructureFeaturesKhr);
 #endif
 
 #if defined(VK_KHR_ray_tracing_pipeline)
-    VkPhysicalDeviceRayTracingPipelineFeaturesKHR rayTracingPipelineFeaturesKhr{};
+    VkPhysicalDeviceRayTracingPipelineFeaturesKHR rayTracingPipelineFeaturesKhr{ };
     rayTracingPipelineFeaturesKhr.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR;
     addToChain(&rayTracingPipelineFeaturesKhr);
 #endif
 
 #if defined(VK_KHR_synchronization2)
-    VkPhysicalDeviceSynchronization2Features synchronization2Features{};
+    VkPhysicalDeviceSynchronization2Features synchronization2Features{ };
     synchronization2Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES;
     addToChain(&synchronization2Features);
 #endif
 
 #if defined(VK_EXT_mesh_shader)
-    VkPhysicalDeviceMeshShaderFeaturesEXT meshShaderFeatures{};
+    VkPhysicalDeviceMeshShaderFeaturesEXT meshShaderFeatures{ };
     meshShaderFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_FEATURES_EXT;
     addToChain(&meshShaderFeatures);
 #endif
 
 #if defined(VK_EXT_host_image_copy)
-    VkPhysicalDeviceHostImageCopyFeaturesEXT hostImageCopyFeatures{};
+    VkPhysicalDeviceHostImageCopyFeaturesEXT hostImageCopyFeatures{ };
     hostImageCopyFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_HOST_IMAGE_COPY_FEATURES_EXT;
     addToChain(&hostImageCopyFeatures);
 #endif
 
 #if defined(VK_KHR_sampler_ycbcr_conversion)
-    VkPhysicalDeviceSamplerYcbcrConversionFeaturesKHR ycbcrConversionFeatures{};
+    VkPhysicalDeviceSamplerYcbcrConversionFeaturesKHR ycbcrConversionFeatures{ };
     ycbcrConversionFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES_KHR;
     addToChain(&ycbcrConversionFeatures);
 #endif
@@ -476,6 +476,12 @@ AdapterFeatures VulkanAdapter::queryAdapterFeatures()
     VkPhysicalDeviceDynamicRenderingLocalReadFeaturesKHR dynamicLocalReadFeatures{};
     dynamicLocalReadFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_LOCAL_READ_FEATURES_KHR;
     addToChain(&dynamicLocalReadFeatures);
+#endif
+
+#if defined(VK_EXT_shader_object)
+    VkPhysicalDeviceShaderObjectFeaturesEXT shaderObjectFeatures{ };
+    shaderObjectFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT;
+    addToChain(&shaderObjectFeatures);
 #endif
 
     vkGetPhysicalDeviceFeatures2(physicalDevice, &deviceFeatures2);
@@ -618,12 +624,16 @@ AdapterFeatures VulkanAdapter::queryAdapterFeatures()
     features.dynamicRenderingLocalRead = static_cast<bool>(dynamicLocalReadFeatures.dynamicRenderingLocalRead);
 #endif
 
+#if defined(VK_EXT_shader_object)
+    features.shaderObject = static_cast<bool>(shaderObjectFeatures.shaderObject);
+#endif
+
     return features;
 }
 
 AdapterSwapchainProperties VulkanAdapter::querySwapchainProperties(const Handle<Surface_t> &surfaceHandle)
 {
-    AdapterSwapchainProperties properties = {};
+    AdapterSwapchainProperties properties = { };
 
     // Get the capabilities
     VulkanSurface *surface = vulkanResourceManager->getSurface(surfaceHandle);
@@ -715,7 +725,7 @@ bool VulkanAdapter::supportsPresentation(const Handle<Surface_t> surfaceHandle, 
 
 FormatProperties VulkanAdapter::formatProperties(Format format) const
 {
-    VkFormatProperties2 props{};
+    VkFormatProperties2 props{ };
     props.sType = VK_STRUCTURE_TYPE_FORMAT_PROPERTIES_2;
     vkGetPhysicalDeviceFormatProperties2(physicalDevice, static_cast<VkFormat>(format), &props);
 
@@ -731,10 +741,10 @@ std::vector<DrmFormatModifierProperties> VulkanAdapter::drmFormatModifierPropert
     std::vector<DrmFormatModifierProperties> modifierProperties;
 
 #if defined(VK_EXT_image_drm_format_modifier)
-    VkDrmFormatModifierPropertiesListEXT vkModifierPropertiesList{};
+    VkDrmFormatModifierPropertiesListEXT vkModifierPropertiesList{ };
     vkModifierPropertiesList.sType = VK_STRUCTURE_TYPE_DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT;
 
-    VkFormatProperties2 vkProperties{};
+    VkFormatProperties2 vkProperties{ };
     vkProperties.sType = VK_STRUCTURE_TYPE_FORMAT_PROPERTIES_2;
     vkProperties.pNext = &vkModifierPropertiesList;
 

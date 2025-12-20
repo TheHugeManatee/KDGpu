@@ -193,20 +193,44 @@ void VulkanRenderPassCommandRecorder::setStencilReference(const StencilFaceFlags
 }
 void VulkanRenderPassCommandRecorder::setCullMode(CullModeFlags cullMode)
 {
+#if defined(VK_EXT_extended_dynamic_state)
+    if (auto *device = vulkanResourceManager->getDevice(deviceHandle); device->vkCmdSetCullModeEXT) {
+        device->vkCmdSetCullModeEXT(commandBuffer, cullModeToVkCullMode(cullMode));
+        return;
+    }
+#endif
     vkCmdSetCullMode(commandBuffer, cullModeToVkCullMode(cullMode));
 }
 void VulkanRenderPassCommandRecorder::setDepthTestEnabled(bool enabled)
 {
+#if defined(VK_EXT_extended_dynamic_state)
+    if (auto *device = vulkanResourceManager->getDevice(deviceHandle); device->vkCmdSetDepthTestEnableEXT) {
+        device->vkCmdSetDepthTestEnableEXT(commandBuffer, enabled ? VK_TRUE : VK_FALSE);
+        return;
+    }
+#endif
     vkCmdSetDepthTestEnable(commandBuffer, enabled ? VK_TRUE : VK_FALSE);
 }
 
 void VulkanRenderPassCommandRecorder::setDepthWriteEnabled(bool enabled)
 {
+#if defined(VK_EXT_extended_dynamic_state)
+    if (auto *device = vulkanResourceManager->getDevice(deviceHandle); device->vkCmdSetDepthWriteEnableEXT) {
+        device->vkCmdSetDepthWriteEnableEXT(commandBuffer, enabled ? VK_TRUE : VK_FALSE);
+        return;
+    }
+#endif
     vkCmdSetDepthWriteEnable(commandBuffer, enabled ? VK_TRUE : VK_FALSE);
 }
 
 void VulkanRenderPassCommandRecorder::setDepthCompareOp(CompareOperation op)
 {
+#if defined(VK_EXT_extended_dynamic_state)
+    if (auto *device = vulkanResourceManager->getDevice(deviceHandle); device->vkCmdSetDepthCompareOpEXT) {
+        device->vkCmdSetDepthCompareOpEXT(commandBuffer, compareOperationToVkCompareOp(op));
+        return;
+    }
+#endif
     vkCmdSetDepthCompareOp(commandBuffer, compareOperationToVkCompareOp(op));
 }
 

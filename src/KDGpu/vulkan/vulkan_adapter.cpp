@@ -583,6 +583,7 @@ AdapterFeatures VulkanAdapter::queryAdapterFeatures()
         .samplerYCbCrConversion = false,
         .dynamicRendering = false,
         .dynamicRenderingLocalRead = false,
+        .shaderObjectDynamicRendering = false,
     };
 
 #if defined(VK_KHR_acceleration_structure)
@@ -625,7 +626,8 @@ AdapterFeatures VulkanAdapter::queryAdapterFeatures()
 #endif
 
 #if defined(VK_EXT_shader_object)
-    features.shaderObject = static_cast<bool>(shaderObjectFeatures.shaderObject);
+    const bool shaderObjectSupported = static_cast<bool>(shaderObjectFeatures.shaderObject);
+    features.shaderObjectDynamicRendering = shaderObjectSupported && features.fillModeNonSolid && features.depthClamp && features.alphaToOne;
 #endif
 
     return features;

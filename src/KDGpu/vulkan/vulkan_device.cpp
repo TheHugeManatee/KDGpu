@@ -280,7 +280,7 @@ VulkanDevice::VulkanDevice(VkDevice _device,
 #endif
 
 #if defined(VK_EXT_shader_object)
-    if (features.shaderObject) {
+    if (features.shaderObjectDynamicRendering) {
         this->vkCreateShadersEXT = (PFN_vkCreateShadersEXT)vkGetDeviceProcAddr(device, "vkCreateShadersEXT");
         this->vkDestroyShaderEXT = (PFN_vkDestroyShaderEXT)vkGetDeviceProcAddr(device, "vkDestroyShaderEXT");
         this->vkCmdBindShadersEXT = (PFN_vkCmdBindShadersEXT)vkGetDeviceProcAddr(device, "vkCmdBindShadersEXT");

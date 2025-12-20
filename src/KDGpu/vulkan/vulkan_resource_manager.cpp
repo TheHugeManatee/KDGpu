@@ -362,6 +362,7 @@ VulkanAdapter *VulkanResourceManager::getAdapter(const Handle<Adapter_t> &handle
 Handle<Device_t> VulkanResourceManager::createDevice(const Handle<Adapter_t> &adapterHandle, const DeviceOptions &options, std::vector<QueueRequest> &queueRequests)
 {
     VulkanAdapter *vulkanAdapter = getAdapter(adapterHandle);
+    const AdapterFeatures adapterFeatureSupport = vulkanAdapter->queryAdapterFeatures();
 
     // Merge requested device extensions and layers with our defaults
     const auto availableDeviceExtensions = vulkanAdapter->extensions();
@@ -472,6 +473,22 @@ Handle<Device_t> VulkanResourceManager::createDevice(const Handle<Adapter_t> &ad
         deviceFeatures.sparseResidencyAliased = options.requestedFeatures.sparseResidencyAliased;
         deviceFeatures.variableMultisampleRate = options.requestedFeatures.variableMultisampleRate;
         deviceFeatures.inheritedQueries = options.requestedFeatures.inheritedQueries;
+    }
+
+    if (options.requestedFeatures.shaderObjectDynamicRendering) {
+        auto ensureFeature = [](bool supported, const char *name) {
+            if (!supported) {
+                SPDLOG_LOGGER_WARN(Logger::logger(), "shaderObjectDynamicRendering requested but {} is not supported by the adapter", name);
+            }
+            return supported;
+        };
+
+        if (ensureFeature(adapterFeatureSupport.fillModeNonSolid, "fillModeNonSolid"))
+            deviceFeatures.fillModeNonSolid = VK_TRUE;
+        if (ensureFeature(adapterFeatureSupport.depthClamp, "depthClamp"))
+            deviceFeatures.depthClamp = VK_TRUE;
+        if (ensureFeature(adapterFeatureSupport.alphaToOne, "alphaToOne"))
+            deviceFeatures.alphaToOne = VK_TRUE;
     }
 
     // Some newer features we have to request via VkPhysicalDeviceFeatures2
@@ -601,10 +618,10 @@ Handle<Device_t> VulkanResourceManager::createDevice(const Handle<Adapter_t> &ad
 
 #if defined(VK_EXT_shader_object)
     VkPhysicalDeviceShaderObjectFeaturesEXT shaderObjectFeatures{};
-    if (options.requestedFeatures.shaderObject) {
-        // Enable shader object
+    if (options.requestedFeatures.shaderObjectDynamicRendering) {
+        // Enable shader object dynamic rendering pipeline
         shaderObjectFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT;
-        shaderObjectFeatures.shaderObject = options.requestedFeatures.shaderObject;
+        shaderObjectFeatures.shaderObject = VK_TRUE;
         addToChain(&shaderObjectFeatures);
     }
 #endif

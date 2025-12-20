@@ -116,7 +116,7 @@ struct AdapterFeatures {
     bool samplerYCbCrConversion;
     bool dynamicRendering;
     bool dynamicRenderingLocalRead;
-    bool shaderObject;
+    bool shaderObjectDynamicRendering;
 };
 
 /*! @} */

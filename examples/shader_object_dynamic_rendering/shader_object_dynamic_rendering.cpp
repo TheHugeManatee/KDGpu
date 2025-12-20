@@ -89,8 +89,8 @@ ColorComponentFlags buildColorMask(const std::array<bool, 4> &maskValues)
 void ShaderObjectDynamicRendering::initializeScene()
 {
     const AdapterFeatures &features = m_device.adapter()->features();
-    if (!features.shaderObject) {
-        SPDLOG_CRITICAL("VK_EXT_shader_object is not supported on this device");
+    if (!features.shaderObjectDynamicRendering) {
+        SPDLOG_CRITICAL("VK_EXT_shader_object dynamic rendering path is not supported on this device");
         std::abort();
     }
 

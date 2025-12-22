@@ -82,26 +82,32 @@ std::vector<const char *> getDefaultRequestedDeviceExtensions()
         VK_KHR_FORMAT_FEATURE_FLAGS_2_EXTENSION_NAME, // Needed by VK_EXT_HOST_IMAGE_COPY_EXTENSION_NAME
         VK_EXT_HOST_IMAGE_COPY_EXTENSION_NAME,
 #endif
-#if defined(VK_KHR_external_semaphore_fd)
-        VK_KHR_EXTERNAL_SEMAPHORE_FD_EXTENSION_NAME,
-#endif
+#if defined(KDGPU_PLATFORM_WIN32)
 #if defined(VK_KHR_external_semaphore_win32)
         VK_KHR_EXTERNAL_SEMAPHORE_WIN32_EXTENSION_NAME,
-#endif
-#if defined(VK_KHR_external_fence_fd)
-        VK_KHR_EXTERNAL_FENCE_FD_EXTENSION_NAME,
 #endif
 #if defined(VK_KHR_external_fence_win32)
         VK_KHR_EXTERNAL_FENCE_WIN32_EXTENSION_NAME,
 #endif
-#if defined(VK_KHR_external_memory_fd)
-        VK_KHR_EXTERNAL_MEMORY_FD_EXTENSION_NAME,
-#endif
 #if defined(VK_KHR_external_memory_win32)
         VK_KHR_EXTERNAL_MEMORY_WIN32_EXTENSION_NAME,
 #endif
+#else
+#if defined(VK_KHR_external_semaphore_fd)
+        VK_KHR_EXTERNAL_SEMAPHORE_FD_EXTENSION_NAME,
+#endif
+#if defined(VK_KHR_external_fence_fd)
+        VK_KHR_EXTERNAL_FENCE_FD_EXTENSION_NAME,
+#endif
+#if defined(VK_KHR_external_memory_fd)
+        VK_KHR_EXTERNAL_MEMORY_FD_EXTENSION_NAME,
+#endif
 #if defined(VK_EXT_external_memory_dma_buf)
         VK_EXT_EXTERNAL_MEMORY_DMA_BUF_EXTENSION_NAME,
+#endif
+#if defined(VK_EXT_image_drm_format_modifier)
+        VK_EXT_IMAGE_DRM_FORMAT_MODIFIER_EXTENSION_NAME,
+#endif
 #endif
 #if defined(VK_KHR_deferred_host_operations)
         VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME,
@@ -114,9 +120,6 @@ std::vector<const char *> getDefaultRequestedDeviceExtensions()
 #endif
 #if defined(VK_EXT_mesh_shader)
         VK_EXT_MESH_SHADER_EXTENSION_NAME,
-#endif
-#if defined(VK_EXT_image_drm_format_modifier)
-        VK_EXT_IMAGE_DRM_FORMAT_MODIFIER_EXTENSION_NAME,
 #endif
 #if defined(VK_KHR_synchronization2)
         VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME,

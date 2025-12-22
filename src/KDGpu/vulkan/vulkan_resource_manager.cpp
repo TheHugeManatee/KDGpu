@@ -500,9 +500,9 @@ Handle<Device_t> VulkanResourceManager::createDevice(const Handle<Adapter_t> &ad
     chainCurrent = reinterpret_cast<VkBaseOutStructure *>(&physicalDeviceFeatures2);
 
 #if defined(VK_API_VERSION_1_1)
+    VkPhysicalDeviceVulkan11Features vulkan11Features{};
     if (options.apiVersion >= VK_API_VERSION_1_1) {
         // Enable Vulkan 1.1 features
-        VkPhysicalDeviceVulkan11Features vulkan11Features{};
         vulkan11Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES;
         vulkan11Features.shaderDrawParameters = true;
         vulkan11Features.multiview = options.requestedFeatures.multiView;
@@ -513,9 +513,9 @@ Handle<Device_t> VulkanResourceManager::createDevice(const Handle<Adapter_t> &ad
 #endif
 
 #if defined(VK_API_VERSION_1_2)
+    VkPhysicalDeviceVulkan12Features vulkan12Features{};
     if (options.apiVersion >= VK_API_VERSION_1_2) {
         // Enable Vulkan 1.2 features
-        VkPhysicalDeviceVulkan12Features vulkan12Features{};
         vulkan12Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
         vulkan12Features.descriptorIndexing = true;
         vulkan12Features.uniformBufferStandardLayout = options.requestedFeatures.uniformBufferStandardLayout;
@@ -546,9 +546,9 @@ Handle<Device_t> VulkanResourceManager::createDevice(const Handle<Adapter_t> &ad
 #endif
 
 #if defined(VK_API_VERSION_1_3)
+    VkPhysicalDeviceVulkan13Features vulkan13Features{};
     if (options.apiVersion >= VK_API_VERSION_1_3) {
         // Enable Vulkan 1.3 features
-        VkPhysicalDeviceVulkan13Features vulkan13Features{};
         vulkan13Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES;
         vulkan13Features.synchronization2 = vulkanAdapter->supportsSynchronization2;
         vulkan13Features.dynamicRendering = options.requestedFeatures.dynamicRendering;

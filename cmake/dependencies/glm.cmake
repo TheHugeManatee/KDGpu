@@ -23,7 +23,7 @@ if(NOT TARGET glm::glm)
     option(GLM_BUILD_LIBRARY "Build dynamic/static library" OFF)
 
     if(NOT glm_POPULATED)
-        FetchContent_Populate(glm)
+        FetchContent_MakeAvailable(glm)
 
         # Note: internally glm does
         # add_library(glm INTERFACE)

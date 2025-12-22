@@ -14,7 +14,7 @@ if(NOT TARGET GPUOpen::VulkanMemoryAllocator)
         GIT_REPOSITORY https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator.git
         GIT_TAG 29d492b60c84ca784ea0943efc7d2e6e0f3bdaac
     )
-    FetchContent_Populate(vulkan_memory_allocator)
+    FetchContent_MakeAvailable(vulkan_memory_allocator)
 
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU")
         add_compile_options(-Wno-implicit-fallthrough)

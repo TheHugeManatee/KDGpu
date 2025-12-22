@@ -36,3 +36,4 @@ add_custom_target(
             KDGpu_HybridRasterRtShadowRtCHitShader
     COMMENT "Target to compile the hybrid_raster_rt shaders"
 )
+set_target_properties(KDGpu_HybridRasterRtShaders PROPERTIES FOLDER "${KDGPU_TARGETS_IDE_FOLDER_PREFIX}Assets/Shaders")

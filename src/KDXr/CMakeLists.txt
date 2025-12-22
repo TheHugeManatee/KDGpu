@@ -64,6 +64,9 @@ add_library(
     KDXr
     ${SOURCES} ${PUBLIC_HEADERS} ${PRIVATE_HEADERS}
 )
+if(NOT KDGPU_TARGETS_IDE_FOLDER STREQUAL "")
+    set_target_properties(KDXr PROPERTIES FOLDER ${KDGPU_TARGETS_IDE_FOLDER})
+endif()
 add_library(
     KDXr::KDXr ALIAS KDXr
 )

@@ -17,6 +17,7 @@ if(KDGPU_BUILD_TESTS)
 endif()
 
 add_custom_target(kdgpu_assets ALL COMMENT "Target to copy the shader assets into the current source directory")
+set_target_properties(kdgpu_assets PROPERTIES FOLDER "${KDGPU_TARGETS_IDE_FOLDER_PREFIX}Assets")
 
 foreach(shader ${SHADER_FILES})
     add_custom_command(

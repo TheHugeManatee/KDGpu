@@ -19,3 +19,5 @@ add_custom_target(
     DEPENDS kdgpu_textures
     COMMENT "Target to copy the texture assets into the current source directory"
 )
+    
+set_target_properties(kdgpu_texture PROPERTIES FOLDER "${KDGPU_TARGETS_IDE_FOLDER_PREFIX}Assets")

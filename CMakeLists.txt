@@ -89,6 +89,12 @@ option(KDGPU_BUILD_KDXR "Build KDXr" ON)
 option(KDGPU_OPENXR_SUPPORT "Enable support for OpenXR" ON)
 add_feature_info(OpenXR ${KDGPU_OPENXR_SUPPORT} "Enable support for OpenXR")
 
+# Folder handling for IDEs - can be set up externally to place all KDGPU targets into subfolders
+set(KDGPU_TARGETS_IDE_FOLDER "KDGpu" CACHE STRING "Folder in IDEs to place KDGpu projects in (only used when project sets USE_FOLDERS to ON)")
+if(NOT KDGPU_TARGETS_IDE_FOLDER STREQUAL "")
+    set(KDGPU_TARGETS_IDE_FOLDER_PREFIX ${KDGPU_TARGETS_IDE_FOLDER}/)
+endif()
+
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/dependencies.cmake)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)

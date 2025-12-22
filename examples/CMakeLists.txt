@@ -27,6 +27,8 @@ function(add_kdgpu_example)
     # Add dependency to the shader assets
     add_dependencies(${KD_ARGS_NAME} kdgpu_assets)
 
+    set_target_properties(${KD_ARGS_NAME} PROPERTIES FOLDER "${KDGPU_TARGETS_IDE_FOLDER_PREFIX}Examples")
+
     target_link_libraries(${KD_ARGS_NAME} PRIVATE ${KD_ARGS_LIBS})
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Linux")

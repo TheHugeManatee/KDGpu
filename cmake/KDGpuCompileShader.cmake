@@ -54,6 +54,7 @@ function(KDGpu_CompileShader target shader output)
         DEPENDS ${output}
         COMMENT "Target to compile a shader"
     )
+    set_target_properties(${target} PROPERTIES FOLDER "${KDGPU_TARGETS_IDE_FOLDER_PREFIX}Assets/Shaders")
 endfunction()
 
 # Compile raytracing shader using glslangValidator
@@ -71,6 +72,7 @@ function(KDGpu_CompileRTShader target shader output)
         DEPENDS ${output}
         COMMENT "Target to compile a shader"
     )
+    set_target_properties(${target} PROPERTIES FOLDER "${KDGPU_TARGETS_IDE_FOLDER_PREFIX}Assets/Shaders")
 endfunction()
 
 # Compile task shader using glslangValidator
@@ -88,6 +90,7 @@ function(KDGpu_CompileMeshTaskShader target shader output)
         DEPENDS ${output}
         COMMENT "Target to compile a mesh/task shader"
     )
+    set_target_properties(${target} PROPERTIES FOLDER "${KDGPU_TARGETS_IDE_FOLDER_PREFIX}Assets/Shaders")
 endfunction()
 
 # Compile a shader set with a vertex and fragment shaders
@@ -102,6 +105,7 @@ function(KDGpu_CompileShaderSet target name)
         DEPENDS ${target}VertexShader ${target}FragmentShader
         COMMENT "Target to compile a shader set"
     )
+    set_target_properties(${target}Shaders PROPERTIES FOLDER "${KDGPU_TARGETS_IDE_FOLDER_PREFIX}Assets/Shaders")
 endfunction()
 
 # Compile a shader set with a vertex, geometry and fragment shaders
@@ -115,6 +119,7 @@ function(KDGpu_CompileGeomShaderSet target name)
         DEPENDS ${target}VertexShader ${target}GeometryShader ${target}FragmentShader
         COMMENT "Target to compile a shader set with a geometry shader"
     )
+    set_target_properties(${target}Shaders PROPERTIES FOLDER "${KDGPU_TARGETS_IDE_FOLDER_PREFIX}Assets/Shaders")
 endfunction()
 
 # Compile a shader using dxc
@@ -138,6 +143,7 @@ function(
         DEPENDS ${output}
         COMMENT "Target to compile a shader"
     )
+    set_target_properties(${target} PROPERTIES FOLDER "${KDGPU_TARGETS_IDE_FOLDER_PREFIX}Assets/Shaders")
 endfunction()
 
 # Compiles shader set using dxc
@@ -152,4 +158,5 @@ function(KDGpu_CompileHLSLShaderSet target name)
         DEPENDS ${target}VertexShader ${target}FragmentShader
         COMMENT "Target to compile a shader set using dxc"
     )
+    set_target_properties(${target} PROPERTIES FOLDER "${KDGPU_TARGETS_IDE_FOLDER_PREFIX}Assets/Shaders")
 endfunction()

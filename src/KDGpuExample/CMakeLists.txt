@@ -27,6 +27,7 @@ cmrc_add_resource_library(
     ${CMAKE_CURRENT_BINARY_DIR}/imgui.frag.spv
 )
 target_compile_features(KDGpuExampleShaderResources PUBLIC cxx_std_17)
+set_target_properties(KDGpuExampleShaderResources PROPERTIES FOLDER "${KDGPU_TARGETS_IDE_FOLDER_PREFIX}Assets")
 
 # As the other resources are just located in this directory and not the build dir, we must have
 # a separate resource lib for these.
@@ -39,6 +40,7 @@ cmrc_add_resource_library(
     fonts/Roboto-Medium.ttf
 )
 target_compile_features(KDGpuExampleResources PUBLIC cxx_std_17)
+set_target_properties(KDGpuExampleResources PROPERTIES FOLDER "${KDGPU_TARGETS_IDE_FOLDER_PREFIX}Assets")
 
 if(NOT TARGET Vulkan::Vulkan)
     find_package(Vulkan REQUIRED)
@@ -103,6 +105,9 @@ add_library(
     KDGpuExample
     ${SOURCES} ${PUBLIC_HEADERS} ${PRIVATE_HEADERS}
 )
+if(NOT KDGPU_TARGETS_IDE_FOLDER STREQUAL "")
+    set_target_properties(KDGpuExample PROPERTIES FOLDER ${KDGPU_TARGETS_IDE_FOLDER})
+endif()
 add_library(
     KDGpu::KDGpuExample ALIAS KDGpuExample
 )

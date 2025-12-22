@@ -19,6 +19,7 @@ add_custom_target(
     DEPENDS KDGpuKDGui_fonts
     COMMENT "Target to add the font assets"
 )
+set_target_properties(KDGpuKDGui_font PROPERTIES FOLDER "${KDGPU_TARGETS_IDE_FOLDER_PREFIX}Assets")
 
 install(
     FILES ${CMAKE_CURRENT_SOURCE_DIR}/Roboto-Medium.ttf ${CMAKE_CURRENT_SOURCE_DIR}/Roboto-Medium-license.txt

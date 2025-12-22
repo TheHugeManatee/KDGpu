@@ -14,3 +14,4 @@ add_custom_target(
     DEPENDS KDGpu_ComputeParticles
     COMMENT "Target to compile the particle shader"
 )
+set_target_properties(KDGpu_ComputeParticleTmp PROPERTIES FOLDER "${KDGPU_TARGETS_IDE_FOLDER_PREFIX}Assets/Shaders")

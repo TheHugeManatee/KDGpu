@@ -12,6 +12,7 @@ add_custom_target(
     DEPENDS KDGpu_EmptyCompute
     COMMENT "Target to compile the empty shader"
 )
+set_target_properties(KDGpu_EmptyComputeTmp PROPERTIES FOLDER "${KDGPU_TARGETS_IDE_FOLDER_PREFIX}Assets/Shaders")
 kdgpu_compileshader(
     KDGpu_EmptyComputeSpecializationConstant specialization_constant.comp specialization_constant.comp.spv
 )
@@ -20,3 +21,4 @@ add_custom_target(
     DEPENDS KDGpu_EmptyComputeSpecializationConstant
     COMMENT "Target to compile the empty shader"
 )
+set_target_properties(KDGpu_EmptyComputeSpecializationConstantsTmp PROPERTIES FOLDER "${KDGPU_TARGETS_IDE_FOLDER_PREFIX}Assets/Shaders")

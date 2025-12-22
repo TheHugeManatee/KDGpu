@@ -14,6 +14,9 @@ add_library(
     KDGpuUtils
     ${SOURCES} ${PUBLIC_HEADERS} ${PRIVATE_HEADERS}
 )
+if(NOT KDGPU_TARGETS_IDE_FOLDER STREQUAL "")
+    set_target_properties(KDGpuUtils PROPERTIES FOLDER ${KDGPU_TARGETS_IDE_FOLDER})
+endif()
 add_library(
     KDGpu::KDGpuUtils ALIAS KDGpuUtils
 )

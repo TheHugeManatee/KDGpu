@@ -22,3 +22,5 @@ add_custom_target(
             KDGpu_ComputeOITCompositingShaders
     COMMENT "Target to compile the compute_oit_transparency shaders"
 )
+
+set_target_properties(KDGpu_ComputeOITShaders PROPERTIES FOLDER "${KDGPU_TARGETS_IDE_FOLDER_PREFIX}Assets/Shaders")

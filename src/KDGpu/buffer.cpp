@@ -29,6 +29,7 @@ Buffer::Buffer(Buffer &&other) noexcept
     m_api = std::exchange(other.m_api, nullptr);
     m_device = std::exchange(other.m_device, {});
     m_buffer = std::exchange(other.m_buffer, {});
+    m_mapped = std::exchange(other.m_mapped, nullptr);
 }
 
 Buffer &Buffer::operator=(Buffer &&other) noexcept
@@ -43,17 +44,19 @@ Buffer &Buffer::operator=(Buffer &&other) noexcept
         m_api = std::exchange(other.m_api, nullptr);
         m_device = std::exchange(other.m_device, {});
         m_buffer = std::exchange(other.m_buffer, {});
+        m_mapped = std::exchange(other.m_mapped, nullptr);
     }
     return *this;
 }
 
 Buffer::~Buffer()
 {
-    if (m_mapped)
-        unmap();
+    if (isValid()) {
+        if (m_mapped)
+            unmap();
 
-    if (isValid())
         m_api->resourceManager()->deleteBuffer(handle());
+    }
 }
 
 void *Buffer::map()

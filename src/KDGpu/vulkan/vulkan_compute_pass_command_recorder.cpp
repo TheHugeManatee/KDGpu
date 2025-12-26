@@ -13,6 +13,7 @@
 #include <KDGpu/vulkan/vulkan_resource_manager.h>
 #include <KDGpu/vulkan/vulkan_enums.h>
 #include <KDGpu/vulkan/vulkan_device.h>
+#include <KDGpu/vulkan/vulkan_shader_object.h>
 
 namespace KDGpu {
 
@@ -30,6 +31,25 @@ void VulkanComputePassCommandRecorder::setPipeline(const Handle<ComputePipeline_
     pipeline = _pipeline;
     VulkanComputePipeline *vulkanPipeline = vulkanResourceManager->getComputePipeline(pipeline);
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, vulkanPipeline->pipeline);
+}
+
+void VulkanComputePassCommandRecorder::bindShader(const Handle<ShaderObject_t> &shader)
+{
+#if defined(VK_EXT_shader_object)
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    if (device->vkCmdBindShadersEXT) {
+        const VulkanShaderObject *shaderObject = vulkanResourceManager->getShaderObject(shader);
+        assert(shaderObject && "Invalid ShaderObject provided to bindShader");
+        const VkShaderStageFlagBits stage = VK_SHADER_STAGE_COMPUTE_BIT;
+        device->vkCmdBindShadersEXT(commandBuffer, 1, &stage, &shaderObject->shaderObject);
+    } else {
+        (void)shader;
+        assert(false && "VK_EXT_shader_object not enabled on device");
+    }
+#else
+    (void)shader;
+    assert(false && "VK_EXT_shader_object not supported by headers");
+#endif
 }
 
 void VulkanComputePassCommandRecorder::setBindGroup(uint32_t group, const Handle<BindGroup_t> &_bindGroup,
@@ -88,14 +108,23 @@ void VulkanComputePassCommandRecorder::dispatchComputeIndirect(std::span<const C
         dispatchComputeIndirect(c);
 }
 
-void VulkanComputePassCommandRecorder::pushConstant(const PushConstantRange &constantRange, const void *data) const
+void VulkanComputePassCommandRecorder::pushConstant(const PushConstantRange &constantRange, const void *data, const Handle<PipelineLayout_t> &pipelineLayout) const
 {
-    VulkanComputePipeline *vulkanPipeline = vulkanResourceManager->getComputePipeline(pipeline);
-    VulkanPipelineLayout *pLayout = vulkanResourceManager->getPipelineLayout(vulkanPipeline->pipelineLayoutHandle);
+    VkPipelineLayout vkPipelineLayout{ VK_NULL_HANDLE };
 
-    assert(pLayout != nullptr); // The PipelineLayout should outlive the pipelines
+    if (pipelineLayout.isValid()) {
+        if (auto *pLayout = vulkanResourceManager->getPipelineLayout(pipelineLayout); pLayout)
+            vkPipelineLayout = pLayout->pipelineLayout;
+    } else if (pipeline.isValid()) {
+        VulkanComputePipeline *vulkanPipeline = vulkanResourceManager->getComputePipeline(pipeline);
+        VulkanPipelineLayout *pLayout = vulkanResourceManager->getPipelineLayout(vulkanPipeline->pipelineLayoutHandle);
+        if (pLayout)
+            vkPipelineLayout = pLayout->pipelineLayout;
+    }
+
+    assert(vkPipelineLayout != VK_NULL_HANDLE);
     vkCmdPushConstants(commandBuffer,
-                       pLayout->pipelineLayout,
+                       vkPipelineLayout,
                        constantRange.shaderStages.toInt(),
                        constantRange.offset,
                        constantRange.size,

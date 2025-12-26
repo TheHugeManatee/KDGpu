@@ -23,6 +23,7 @@ class VulkanResourceManager;
 
 struct ComputePipeline_t;
 struct Device_t;
+struct ShaderObject_t;
 
 /**
  * @brief VulkanComputePassCommandRecorder
@@ -36,6 +37,7 @@ struct KDGPU_EXPORT VulkanComputePassCommandRecorder {
                                               const Handle<Device_t> &_deviceHandle);
 
     void setPipeline(const Handle<ComputePipeline_t> &pipeline);
+    void bindShader(const Handle<ShaderObject_t> &shader);
     void setBindGroup(uint32_t group, const Handle<BindGroup_t> &bindGroup,
                       const Handle<PipelineLayout_t> &pipelineLayout,
                       std::span<const uint32_t> dynamicBufferOffsets) const;
@@ -43,7 +45,7 @@ struct KDGPU_EXPORT VulkanComputePassCommandRecorder {
     void dispatchCompute(std::span<const ComputeCommand> commands) const;
     void dispatchComputeIndirect(const ComputeCommandIndirect &command) const;
     void dispatchComputeIndirect(std::span<const ComputeCommandIndirect> commands) const;
-    void pushConstant(const PushConstantRange &constantRange, const void *data) const;
+    void pushConstant(const PushConstantRange &constantRange, const void *data, const Handle<PipelineLayout_t> &pipelineLayout) const;
     void pushBindGroup(uint32_t group,
                        std::span<const BindGroupEntry> bindGroupEntries,
                        const Handle<PipelineLayout_t> &pipelineLayout) const;

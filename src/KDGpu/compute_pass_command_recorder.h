@@ -25,6 +25,7 @@ struct Device_t;
 struct ComputePipeline_t;
 struct ComputePassCommandRecorder_t;
 struct PipelineLayout_t;
+struct ShaderObject_t;
 struct BindGroupEntry;
 
 struct PushConstantRange;
@@ -64,6 +65,7 @@ public:
     operator Handle<ComputePassCommandRecorder_t>() const noexcept { return m_computePassCommandRecorder; }
 
     void setPipeline(const Handle<ComputePipeline_t> &pipeline);
+    void bindShader(const Handle<ShaderObject_t> &shader);
 
     void setBindGroup(uint32_t group, const Handle<BindGroup_t> &bindGroup,
                       const Handle<PipelineLayout_t> &pipelineLayout = Handle<PipelineLayout_t>(),
@@ -75,7 +77,7 @@ public:
     void dispatchComputeIndirect(const ComputeCommandIndirect &command);
     void dispatchComputeIndirect(std::span<const ComputeCommandIndirect> commands);
 
-    void pushConstant(const PushConstantRange &constantRange, const void *data);
+    void pushConstant(const PushConstantRange &constantRange, const void *data, const Handle<PipelineLayout_t> &pipelineLayout = Handle<PipelineLayout_t>());
     void pushBindGroup(uint32_t group,
                        std::span<const BindGroupEntry> bindGroupEntries,
                        const Handle<PipelineLayout_t> &pipelineLayout = Handle<PipelineLayout_t>());

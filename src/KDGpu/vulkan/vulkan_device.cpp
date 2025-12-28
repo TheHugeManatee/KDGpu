@@ -512,6 +512,29 @@ void VulkanDevice::fillWriteBindGroupDataForBindGroupEntry(WriteBindGroupData &w
     }
 }
 
+void VulkanDevice::updateDescriptorSets(std::span<const WriteBindGroupData> writes) const
+{
+    if (writes.empty())
+        return;
+
+    std::vector<VkWriteDescriptorSet> descriptorWrites;
+    descriptorWrites.reserve(writes.size());
+    for (const auto &write : writes) {
+        if (write.descriptorWrite.descriptorCount == 0)
+            continue;
+        descriptorWrites.push_back(write.descriptorWrite);
+    }
+
+    if (descriptorWrites.empty())
+        return;
+
+    vkUpdateDescriptorSets(device,
+                           static_cast<uint32_t>(descriptorWrites.size()),
+                           descriptorWrites.data(),
+                           0,
+                           nullptr);
+}
+
 } // namespace KDGpu
 
 // NOLINTEND(readability-function-cognitive-complexity)

@@ -78,6 +78,7 @@ struct KDGPU_EXPORT VulkanDevice {
     VmaAllocator getOrCreateExternalMemoryAllocator(ExternalMemoryHandleTypeFlags externalMemoryHandleType);
     VmaAllocator createMemoryAllocator(ExternalMemoryHandleTypeFlags externalMemoryHandleType = ExternalMemoryHandleTypeFlagBits::None) const;
     void fillWriteBindGroupDataForBindGroupEntry(WriteBindGroupData &writeBindGroupData, const BindGroupEntry &entry, const VkDescriptorSet &descriptorSet = VK_NULL_HANDLE) const;
+    void updateDescriptorSets(std::span<const WriteBindGroupData> writes) const;
 
     // NOLINTBEGIN(misc-non-private-member-variables-in-classes)
     VkDevice device{ VK_NULL_HANDLE };

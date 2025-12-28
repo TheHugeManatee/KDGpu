@@ -1387,5 +1387,6 @@ OPERATORS_FOR_FLAGS(KDGpu::HostImageCopyFlags);
 OPERATORS_FOR_FLAGS(KDGpu::TextureCreateFlags);
 OPERATORS_FOR_FLAGS(KDGpu::BindGroupPoolFlags);
 OPERATORS_FOR_FLAGS(KDGpu::BindGroupLayoutFlags);
+OPERATORS_FOR_FLAGS(KDGpu::ResourceBindingFlags);
 
 // NOLINTEND(performance-enum-size)

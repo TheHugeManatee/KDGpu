@@ -20,6 +20,7 @@ namespace KDGpu {
 class VulkanResourceManager;
 struct Device_t;
 struct BindGroupPool_t;
+struct WriteBindGroupData;
 
 /**
  * @brief VulkanBindGroup
@@ -33,6 +34,7 @@ struct KDGPU_EXPORT VulkanBindGroup {
                              const Handle<Device_t> &_deviceHandle,
                              bool _implicitFree);
 
+    void fillWriteBindGroupData(WriteBindGroupData &writeBindGroupData, const BindGroupEntry &entry) const;
     void update(const BindGroupEntry &entry);
     bool hasValidHandle() const { return descriptorSet != VK_NULL_HANDLE; };
 

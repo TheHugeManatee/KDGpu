@@ -29,6 +29,20 @@ VulkanBindGroup::VulkanBindGroup(VkDescriptorSet _descriptorSet,
 {
 }
 
+void VulkanBindGroup::fillWriteBindGroupData(WriteBindGroupData &writeBindGroupData, const BindGroupEntry &entry) const
+{
+    if (descriptorSet == VK_NULL_HANDLE) {
+        // If the descriptor set is null, we cannot update it.
+        // This can happen if the pool has been reset and our BindGroup kept alive
+        SPDLOG_LOGGER_ERROR(Logger::logger(), "BindGroup Vulkan Handle is NULL, unable to update. This can happen if the BindGroupPool has been reset.");
+        writeBindGroupData.descriptorWrite.descriptorCount = 0;
+        return;
+    }
+
+    VulkanDevice *vulkanDevice = vulkanResourceManager->getDevice(deviceHandle);
+    vulkanDevice->fillWriteBindGroupDataForBindGroupEntry(writeBindGroupData, entry, descriptorSet);
+}
+
 void VulkanBindGroup::update(const BindGroupEntry &entry)
 {
     VulkanDevice *vulkanDevice = vulkanResourceManager->getDevice(deviceHandle);

@@ -68,6 +68,21 @@ void ComputePassCommandRecorder::setBindGroup(uint32_t group, const Handle<BindG
     apiComputePassCommandRecorder->setBindGroup(group, bindGroup, pipelineLayout, dynamicBufferOffsets);
 }
 
+void ComputePassCommandRecorder::bindDescriptorBuffers(std::span<const DescriptorBufferBinding> bindings)
+{
+    auto *apiComputePassCommandRecorder = m_api->resourceManager()->getComputePassCommandRecorder(m_computePassCommandRecorder);
+    apiComputePassCommandRecorder->bindDescriptorBuffers(bindings);
+}
+
+void ComputePassCommandRecorder::setDescriptorBufferOffsets(const Handle<PipelineLayout_t> &pipelineLayout,
+                                                            uint32_t firstSet,
+                                                            std::span<const uint32_t> bufferIndices,
+                                                            std::span<const DeviceSize> offsets)
+{
+    auto *apiComputePassCommandRecorder = m_api->resourceManager()->getComputePassCommandRecorder(m_computePassCommandRecorder);
+    apiComputePassCommandRecorder->setDescriptorBufferOffsets(pipelineLayout, firstSet, bufferIndices, offsets);
+}
+
 void ComputePassCommandRecorder::dispatchCompute(const ComputeCommand &command)
 {
     auto *apiComputePassCommandRecorder = m_api->resourceManager()->getComputePassCommandRecorder(m_computePassCommandRecorder);

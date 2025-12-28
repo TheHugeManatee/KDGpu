@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include <KDGpu/descriptor_buffer.h>
 #include <KDGpu/vulkan/vulkan_adapter.h>
 #include <KDGpu/vulkan/vulkan_bind_group.h>
 #include <KDGpu/vulkan/vulkan_bind_group_layout.h>
@@ -201,6 +202,7 @@ public:
     Handle<BindGroupLayout_t> createBindGroupLayout(const Handle<Device_t> &deviceHandle, const BindGroupLayoutOptions &options);
     void deleteBindGroupLayout(const Handle<BindGroupLayout_t> &handle);
     [[nodiscard]] VulkanBindGroupLayout *getBindGroupLayout(const Handle<BindGroupLayout_t> &handle) const;
+    DescriptorBufferLayoutInfo descriptorBufferLayoutInfo(const Handle<BindGroupLayout_t> &handle) const;
 
     Handle<Sampler_t> createSampler(const Handle<Device_t> &deviceHandle, const SamplerOptions &options);
     void deleteSampler(const Handle<Sampler_t> &handle);

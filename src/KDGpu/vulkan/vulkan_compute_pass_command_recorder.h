@@ -11,6 +11,7 @@
 #pragma once
 
 #include <KDGpu/bind_group.h>
+#include <KDGpu/descriptor_buffer.h>
 #include <KDGpu/compute_pass_command_recorder.h>
 #include <KDGpu/handle.h>
 #include <KDGpu/kdgpu_export.h>
@@ -41,6 +42,11 @@ struct KDGPU_EXPORT VulkanComputePassCommandRecorder {
     void setBindGroup(uint32_t group, const Handle<BindGroup_t> &bindGroup,
                       const Handle<PipelineLayout_t> &pipelineLayout,
                       std::span<const uint32_t> dynamicBufferOffsets) const;
+    void bindDescriptorBuffers(std::span<const DescriptorBufferBinding> bindings) const;
+    void setDescriptorBufferOffsets(const Handle<PipelineLayout_t> &pipelineLayout,
+                                    uint32_t firstSet,
+                                    std::span<const uint32_t> bufferIndices,
+                                    std::span<const DeviceSize> offsets) const;
     void dispatchCompute(const ComputeCommand &command) const;
     void dispatchCompute(std::span<const ComputeCommand> commands) const;
     void dispatchComputeIndirect(const ComputeCommandIndirect &command) const;

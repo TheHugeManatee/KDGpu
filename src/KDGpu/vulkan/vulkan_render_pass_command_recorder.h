@@ -45,6 +45,11 @@ struct KDGPU_EXPORT VulkanRenderPassCommandRecorder {
     void setIndexBuffer(const Handle<Buffer_t> &buffer, DeviceSize offset, IndexType indexType) const;
     void setBindGroup(uint32_t group, const Handle<BindGroup_t> &bindGroup,
                       const Handle<PipelineLayout_t> &pipelineLayout,  std::span<const uint32_t> dynamicBufferOffsets) const;
+    void bindDescriptorBuffers(std::span<const DescriptorBufferBinding> bindings) const;
+    void setDescriptorBufferOffsets(const Handle<PipelineLayout_t> &pipelineLayout,
+                                    uint32_t firstSet,
+                                    std::span<const uint32_t> bufferIndices,
+                                    std::span<const DeviceSize> offsets) const;
     void setViewport(const Viewport &viewport) const;
     void setScissor(const Rect2D &scissor) const;
     void setStencilReference(StencilFaceFlags faceMask, int reference) const;

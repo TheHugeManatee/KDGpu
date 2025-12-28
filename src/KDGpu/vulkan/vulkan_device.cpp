@@ -147,6 +147,25 @@ VulkanDevice::VulkanDevice(VkDevice _device,
     }
 #endif
 
+#if defined(VK_EXT_descriptor_buffer)
+    if (features.descriptorBuffer) {
+        const auto adapterExtensions = vulkanAdapter->extensions();
+        for (const auto &extension : adapterExtensions) {
+            if (extension.name == VK_EXT_DESCRIPTOR_BUFFER_EXTENSION_NAME) {
+                this->vkCmdBindDescriptorBuffersEXT = PFN_vkCmdBindDescriptorBuffersEXT(
+                        vkGetDeviceProcAddr(device, "vkCmdBindDescriptorBuffersEXT"));
+                this->vkCmdSetDescriptorBufferOffsetsEXT = PFN_vkCmdSetDescriptorBufferOffsetsEXT(
+                        vkGetDeviceProcAddr(device, "vkCmdSetDescriptorBufferOffsetsEXT"));
+                this->vkGetDescriptorSetLayoutSizeEXT = PFN_vkGetDescriptorSetLayoutSizeEXT(
+                        vkGetDeviceProcAddr(device, "vkGetDescriptorSetLayoutSizeEXT"));
+                this->vkGetDescriptorSetLayoutBindingOffsetEXT = PFN_vkGetDescriptorSetLayoutBindingOffsetEXT(
+                        vkGetDeviceProcAddr(device, "vkGetDescriptorSetLayoutBindingOffsetEXT"));
+                break;
+            }
+        }
+    }
+#endif
+
 #if defined(VK_KHR_external_semaphore_fd)
     vkGetSemaphoreFdKHR = (PFN_vkGetSemaphoreFdKHR)vkGetDeviceProcAddr(device, "vkGetSemaphoreFdKHR");
 #endif

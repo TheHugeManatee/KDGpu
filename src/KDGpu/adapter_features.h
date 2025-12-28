@@ -100,6 +100,10 @@ struct AdapterFeatures {
     bool bindGroupBindingPartiallyBound;
     bool bindGroupBindingVariableDescriptorCount;
     bool runtimeBindGroupArray;
+    bool descriptorBuffer;
+    bool descriptorBufferCaptureReplay;
+    bool descriptorBufferImageLayoutIgnored;
+    bool descriptorBufferPushDescriptors;
     bool bufferDeviceAddress;
     bool accelerationStructures;
     bool rayTracingPipeline;

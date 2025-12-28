@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include <KDGpu/descriptor_buffer.h>
 #include <KDGpu/gpu_core.h>
 #include <KDGpu/handle.h>
 #include <KDGpu/kdgpu_export.h>
@@ -72,6 +73,11 @@ public:
                       const Handle<BindGroup_t> &bindGroup,
                       const Handle<PipelineLayout_t> &pipelineLayout = Handle<PipelineLayout_t>(),
                       std::span<const uint32_t> dynamicBufferOffsets = {});
+    void bindDescriptorBuffers(std::span<const DescriptorBufferBinding> bindings);
+    void setDescriptorBufferOffsets(const Handle<PipelineLayout_t> &pipelineLayout,
+                                    uint32_t firstSet,
+                                    std::span<const uint32_t> bufferIndices,
+                                    std::span<const DeviceSize> offsets);
 
     void traceRays(const RayTracingCommand &rayTracingCommand);
 

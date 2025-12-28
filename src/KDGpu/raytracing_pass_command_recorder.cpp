@@ -63,6 +63,21 @@ void RayTracingPassCommandRecorder::setBindGroup(uint32_t group, const Handle<Bi
     apiRayTracingPassCommandRecorder->setBindGroup(group, bindGroup, pipelineLayout, dynamicBufferOffsets);
 }
 
+void RayTracingPassCommandRecorder::bindDescriptorBuffers(std::span<const DescriptorBufferBinding> bindings)
+{
+    auto *apiRayTracingPassCommandRecorder = m_api->resourceManager()->getRayTracingPassCommandRecorder(m_rayTracingCommandRecorder);
+    apiRayTracingPassCommandRecorder->bindDescriptorBuffers(bindings);
+}
+
+void RayTracingPassCommandRecorder::setDescriptorBufferOffsets(const Handle<PipelineLayout_t> &pipelineLayout,
+                                                               uint32_t firstSet,
+                                                               std::span<const uint32_t> bufferIndices,
+                                                               std::span<const DeviceSize> offsets)
+{
+    auto *apiRayTracingPassCommandRecorder = m_api->resourceManager()->getRayTracingPassCommandRecorder(m_rayTracingCommandRecorder);
+    apiRayTracingPassCommandRecorder->setDescriptorBufferOffsets(pipelineLayout, firstSet, bufferIndices, offsets);
+}
+
 void RayTracingPassCommandRecorder::traceRays(const RayTracingCommand &rayTracingCommand)
 {
     auto *apiRayTracingPassCommandRecorder = m_api->resourceManager()->getRayTracingPassCommandRecorder(m_rayTracingCommandRecorder);

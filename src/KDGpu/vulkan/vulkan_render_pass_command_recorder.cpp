@@ -165,6 +165,73 @@ void VulkanRenderPassCommandRecorder::setBindGroup(uint32_t group, const Handle<
                             dynamicBufferOffsets.size(), dynamicBufferOffsets.data());
 }
 
+void VulkanRenderPassCommandRecorder::bindDescriptorBuffers(std::span<const DescriptorBufferBinding> bindings) const
+{
+#if defined(VK_EXT_descriptor_buffer)
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    if (!device->vkCmdBindDescriptorBuffersEXT)
+        return;
+
+    std::vector<VkDescriptorBufferBindingInfoEXT> vkBindings;
+    vkBindings.reserve(bindings.size());
+    for (const auto &binding : bindings) {
+        VulkanBuffer *vulkanBuffer = vulkanResourceManager->getBuffer(binding.buffer);
+        VkDescriptorBufferBindingInfoEXT vkBinding{};
+        vkBinding.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_BUFFER_BINDING_INFO_EXT;
+        vkBinding.address = vulkanBuffer->bufferDeviceAddress() + binding.offset;
+        vkBinding.usage = static_cast<VkBufferUsageFlags>(binding.usage.toInt());
+        vkBindings.push_back(vkBinding);
+    }
+
+    device->vkCmdBindDescriptorBuffersEXT(commandBuffer,
+                                          static_cast<uint32_t>(vkBindings.size()),
+                                          vkBindings.data());
+#else
+    (void)bindings;
+    assert(false);
+#endif
+}
+
+void VulkanRenderPassCommandRecorder::setDescriptorBufferOffsets(const Handle<PipelineLayout_t> &pipelineLayout,
+                                                                 uint32_t firstSet,
+                                                                 std::span<const uint32_t> bufferIndices,
+                                                                 std::span<const DeviceSize> offsets) const
+{
+#if defined(VK_EXT_descriptor_buffer)
+    assert(bufferIndices.size() == offsets.size());
+    VulkanDevice *device = vulkanResourceManager->getDevice(deviceHandle);
+    if (!device->vkCmdSetDescriptorBufferOffsetsEXT)
+        return;
+
+    VkPipelineLayout vkPipelineLayout{ VK_NULL_HANDLE };
+    if (pipelineLayout.isValid()) {
+        VulkanPipelineLayout *vulkanPipelineLayout = vulkanResourceManager->getPipelineLayout(pipelineLayout);
+        if (vulkanPipelineLayout)
+            vkPipelineLayout = vulkanPipelineLayout->pipelineLayout;
+    } else if (pipeline.isValid()) {
+        VulkanGraphicsPipeline *vulkanPipeline = vulkanResourceManager->getGraphicsPipeline(pipeline);
+        VulkanPipelineLayout *vulkanPipelineLayout = vulkanResourceManager->getPipelineLayout(vulkanPipeline->pipelineLayoutHandle);
+        if (vulkanPipelineLayout)
+            vkPipelineLayout = vulkanPipelineLayout->pipelineLayout;
+    }
+
+    assert(vkPipelineLayout != VK_NULL_HANDLE);
+    device->vkCmdSetDescriptorBufferOffsetsEXT(commandBuffer,
+                                               VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                               vkPipelineLayout,
+                                               firstSet,
+                                               static_cast<uint32_t>(bufferIndices.size()),
+                                               bufferIndices.data(),
+                                               reinterpret_cast<const VkDeviceSize *>(offsets.data()));
+#else
+    (void)pipelineLayout;
+    (void)firstSet;
+    (void)bufferIndices;
+    (void)offsets;
+    assert(false);
+#endif
+}
+
 void VulkanRenderPassCommandRecorder::setViewport(const Viewport &viewport) const
 {
     VkViewport vkViewport = {

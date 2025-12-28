@@ -106,6 +106,7 @@ set(HEADERS
     compute_pipeline_options.h
     compute_pass_command_recorder.h
     device.h
+    descriptor_buffer.h
     device_options.h
     fence.h
     graphics_api.h

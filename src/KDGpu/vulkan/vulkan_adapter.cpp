@@ -426,6 +426,12 @@ AdapterFeatures VulkanAdapter::queryAdapterFeatures()
     deviceDescriptorIndexingFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES;
     addToChain(&deviceDescriptorIndexingFeatures);
 
+#if defined(VK_EXT_descriptor_buffer)
+    VkPhysicalDeviceDescriptorBufferFeaturesEXT descriptorBufferFeatures{ };
+    descriptorBufferFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_FEATURES_EXT;
+    addToChain(&descriptorBufferFeatures);
+#endif
+
     VkPhysicalDeviceVulkan12Features physicalDeviceFeatures12{ };
     physicalDeviceFeatures12.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
     addToChain(&physicalDeviceFeatures12);
@@ -567,6 +573,10 @@ AdapterFeatures VulkanAdapter::queryAdapterFeatures()
         .bindGroupBindingPartiallyBound = static_cast<bool>(deviceDescriptorIndexingFeatures.descriptorBindingPartiallyBound),
         .bindGroupBindingVariableDescriptorCount = static_cast<bool>(deviceDescriptorIndexingFeatures.descriptorBindingVariableDescriptorCount),
         .runtimeBindGroupArray = static_cast<bool>(deviceDescriptorIndexingFeatures.runtimeDescriptorArray),
+        .descriptorBuffer = false,
+        .descriptorBufferCaptureReplay = false,
+        .descriptorBufferImageLayoutIgnored = false,
+        .descriptorBufferPushDescriptors = false,
         .bufferDeviceAddress = static_cast<bool>(physicalDeviceFeatures12.bufferDeviceAddress),
         .accelerationStructures = false,
         .rayTracingPipeline = false,
@@ -596,6 +606,13 @@ AdapterFeatures VulkanAdapter::queryAdapterFeatures()
     features.rayTracingPipelineShaderGroupHandleCaptureReplayMixed = static_cast<bool>(rayTracingPipelineFeaturesKhr.rayTracingPipelineShaderGroupHandleCaptureReplayMixed);
     features.rayTracingPipelineTraceRaysIndirect = static_cast<bool>(rayTracingPipelineFeaturesKhr.rayTracingPipelineTraceRaysIndirect);
     features.rayTraversalPrimitiveCulling = static_cast<bool>(rayTracingPipelineFeaturesKhr.rayTraversalPrimitiveCulling);
+#endif
+
+#if defined(VK_EXT_descriptor_buffer)
+    features.descriptorBuffer = static_cast<bool>(descriptorBufferFeatures.descriptorBuffer);
+    features.descriptorBufferCaptureReplay = static_cast<bool>(descriptorBufferFeatures.descriptorBufferCaptureReplay);
+    features.descriptorBufferImageLayoutIgnored = static_cast<bool>(descriptorBufferFeatures.descriptorBufferImageLayoutIgnored);
+    features.descriptorBufferPushDescriptors = static_cast<bool>(descriptorBufferFeatures.descriptorBufferPushDescriptors);
 #endif
 
 #if defined(VK_EXT_mesh_shader)

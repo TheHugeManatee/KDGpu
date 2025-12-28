@@ -154,6 +154,13 @@ struct KDGPU_EXPORT VulkanDevice {
     PFN_vkCmdDrawMeshTasksIndirectEXT vkCmdDrawMeshTasksIndirectEXT{ nullptr };
 #endif
 
+#if defined(VK_EXT_descriptor_buffer)
+    PFN_vkCmdBindDescriptorBuffersEXT vkCmdBindDescriptorBuffersEXT{ nullptr };
+    PFN_vkCmdSetDescriptorBufferOffsetsEXT vkCmdSetDescriptorBufferOffsetsEXT{ nullptr };
+    PFN_vkGetDescriptorSetLayoutSizeEXT vkGetDescriptorSetLayoutSizeEXT{ nullptr };
+    PFN_vkGetDescriptorSetLayoutBindingOffsetEXT vkGetDescriptorSetLayoutBindingOffsetEXT{ nullptr };
+#endif
+
 #if defined(VK_EXT_extended_dynamic_state)
     PFN_vkCmdBindVertexBuffers2EXT vkCmdBindVertexBuffers2EXT{ nullptr };
     PFN_vkCmdSetCullModeEXT vkCmdSetCullModeEXT{ nullptr };

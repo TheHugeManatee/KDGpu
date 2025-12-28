@@ -39,6 +39,11 @@ struct KDGPU_EXPORT VulkanRayTracingPassCommandRecorder {
     void setBindGroup(uint32_t group, const Handle<BindGroup_t> &bindGroup,
                       const Handle<PipelineLayout_t> &pipelineLayout,
                       std::span<const uint32_t> dynamicBufferOffsets) const;
+    void bindDescriptorBuffers(std::span<const DescriptorBufferBinding> bindings) const;
+    void setDescriptorBufferOffsets(const Handle<PipelineLayout_t> &pipelineLayout,
+                                    uint32_t firstSet,
+                                    std::span<const uint32_t> bufferIndices,
+                                    std::span<const DeviceSize> offsets) const;
     void traceRays(const RayTracingCommand &rayTracingCommand) const;
     void pushConstant(const PushConstantRange &constantRange, const void *data) const;
     void pushBindGroup(uint32_t group,

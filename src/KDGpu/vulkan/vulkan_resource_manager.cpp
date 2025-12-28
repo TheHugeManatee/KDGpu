@@ -545,6 +545,22 @@ Handle<Device_t> VulkanResourceManager::createDevice(const Handle<Adapter_t> &ad
     }
 #endif
 
+#if defined(VK_EXT_descriptor_buffer)
+    VkPhysicalDeviceDescriptorBufferFeaturesEXT descriptorBufferFeatures{};
+    const bool enableDescriptorBuffer = options.requestedFeatures.descriptorBuffer
+            || options.requestedFeatures.descriptorBufferCaptureReplay
+            || options.requestedFeatures.descriptorBufferImageLayoutIgnored
+            || options.requestedFeatures.descriptorBufferPushDescriptors;
+    if (enableDescriptorBuffer) {
+        descriptorBufferFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_FEATURES_EXT;
+        descriptorBufferFeatures.descriptorBuffer = enableDescriptorBuffer;
+        descriptorBufferFeatures.descriptorBufferCaptureReplay = options.requestedFeatures.descriptorBufferCaptureReplay;
+        descriptorBufferFeatures.descriptorBufferImageLayoutIgnored = options.requestedFeatures.descriptorBufferImageLayoutIgnored;
+        descriptorBufferFeatures.descriptorBufferPushDescriptors = options.requestedFeatures.descriptorBufferPushDescriptors;
+        addToChain(&descriptorBufferFeatures);
+    }
+#endif
+
 #if defined(VK_API_VERSION_1_3)
     VkPhysicalDeviceVulkan13Features vulkan13Features{};
     if (options.apiVersion >= VK_API_VERSION_1_3) {
@@ -3579,6 +3595,35 @@ void VulkanResourceManager::deleteBindGroupLayout(const Handle<BindGroupLayout_t
 VulkanBindGroupLayout *VulkanResourceManager::getBindGroupLayout(const Handle<BindGroupLayout_t> &handle) const
 {
     return m_bindGroupLayouts.get(handle);
+}
+
+DescriptorBufferLayoutInfo VulkanResourceManager::descriptorBufferLayoutInfo(const Handle<BindGroupLayout_t> &handle) const
+{
+    DescriptorBufferLayoutInfo info{};
+#if defined(VK_EXT_descriptor_buffer)
+    VulkanBindGroupLayout *vulkanBindGroupLayout = m_bindGroupLayouts.get(handle);
+    if (!vulkanBindGroupLayout)
+        return info;
+
+    VulkanDevice *vulkanDevice = m_devices.get(vulkanBindGroupLayout->deviceHandle);
+    if (!vulkanDevice || !vulkanDevice->vkGetDescriptorSetLayoutSizeEXT || !vulkanDevice->vkGetDescriptorSetLayoutBindingOffsetEXT)
+        return info;
+
+    VkDeviceSize layoutSize = 0;
+    vulkanDevice->vkGetDescriptorSetLayoutSizeEXT(vulkanDevice->device, vulkanBindGroupLayout->descriptorSetLayout, &layoutSize);
+    info.layoutSize = static_cast<DeviceSize>(layoutSize);
+
+    info.bindingOffsets.reserve(vulkanBindGroupLayout->bindings.size());
+    for (const auto &binding : vulkanBindGroupLayout->bindings) {
+        VkDeviceSize bindingOffset = 0;
+        vulkanDevice->vkGetDescriptorSetLayoutBindingOffsetEXT(
+                vulkanDevice->device, vulkanBindGroupLayout->descriptorSetLayout, binding.binding, &bindingOffset);
+        info.bindingOffsets.push_back(DescriptorBufferBindingOffset{
+                .binding = binding.binding,
+                .offset = static_cast<DeviceSize>(bindingOffset) });
+    }
+#endif
+    return info;
 }
 
 Handle<Sampler_t> VulkanResourceManager::createSampler(const Handle<Device_t> &deviceHandle, const SamplerOptions &options)

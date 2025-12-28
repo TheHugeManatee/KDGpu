@@ -62,6 +62,13 @@ bool BindGroupLayout::isCompatibleWith(const Handle<BindGroupLayout_t> &other) c
     return apiLayout->isCompatibleWith(*otherApiLayout);
 }
 
+DescriptorBufferLayoutInfo BindGroupLayout::descriptorBufferLayoutInfo() const
+{
+    if (!isValid())
+        return {};
+    return m_api->resourceManager()->descriptorBufferLayoutInfo(handle());
+}
+
 bool operator==(const BindGroupLayout &a, const BindGroupLayout &b)
 {
     return (a.m_api == b.m_api && a.m_device == b.m_device &&

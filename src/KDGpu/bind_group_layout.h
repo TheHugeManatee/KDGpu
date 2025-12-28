@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include <KDGpu/descriptor_buffer.h>
 #include <KDGpu/handle.h>
 #include <KDGpu/kdgpu_export.h>
 #include <KDGpu/graphics_api.h>
@@ -42,6 +43,7 @@ public:
     operator Handle<BindGroupLayout_t>() const noexcept { return m_bindGroupLayout; }
 
     bool isCompatibleWith(const Handle<BindGroupLayout_t> &other) const;
+    DescriptorBufferLayoutInfo descriptorBufferLayoutInfo() const;
 
 private:
     explicit BindGroupLayout(GraphicsApi *api, const Handle<Device_t> &device, const BindGroupLayoutOptions &options);

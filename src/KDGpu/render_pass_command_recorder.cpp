@@ -87,6 +87,21 @@ void RenderPassCommandRecorder::setBindGroup(uint32_t group, const Handle<BindGr
     apiRenderPassCommandRecorder->setBindGroup(group, bindGroup, pipelineLayout, dynamicBufferOffsets);
 }
 
+void RenderPassCommandRecorder::bindDescriptorBuffers(std::span<const DescriptorBufferBinding> bindings)
+{
+    auto *apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->bindDescriptorBuffers(bindings);
+}
+
+void RenderPassCommandRecorder::setDescriptorBufferOffsets(const Handle<PipelineLayout_t> &pipelineLayout,
+                                                           uint32_t firstSet,
+                                                           std::span<const uint32_t> bufferIndices,
+                                                           std::span<const DeviceSize> offsets)
+{
+    auto *apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setDescriptorBufferOffsets(pipelineLayout, firstSet, bufferIndices, offsets);
+}
+
 void RenderPassCommandRecorder::setViewport(const Viewport &viewport)
 {
     auto *apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);

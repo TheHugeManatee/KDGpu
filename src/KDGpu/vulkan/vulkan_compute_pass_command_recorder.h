@@ -23,6 +23,7 @@ class VulkanResourceManager;
 
 struct ComputePipeline_t;
 struct Device_t;
+struct PipelineLayout_t;
 struct ShaderObject_t;
 
 /**
@@ -37,6 +38,7 @@ struct KDGPU_EXPORT VulkanComputePassCommandRecorder {
                                               const Handle<Device_t> &_deviceHandle);
 
     void setPipeline(const Handle<ComputePipeline_t> &pipeline);
+    void setPipelineLayout(const Handle<PipelineLayout_t> &pipelineLayout);
     void bindShader(const Handle<ShaderObject_t> &shader);
     void setBindGroup(uint32_t group, const Handle<BindGroup_t> &bindGroup,
                       const Handle<PipelineLayout_t> &pipelineLayout,
@@ -56,6 +58,7 @@ struct KDGPU_EXPORT VulkanComputePassCommandRecorder {
     VulkanResourceManager *vulkanResourceManager{ nullptr };
     Handle<Device_t> deviceHandle;
     Handle<ComputePipeline_t> pipeline;
+    Handle<PipelineLayout_t> pipelineLayout;
     // NOLINTEND(misc-non-private-member-variables-in-classes)
 };
 

@@ -113,6 +113,7 @@ public:
     operator Handle<RenderPassCommandRecorder_t>() const noexcept { return m_renderPassCommandRecorder; }
 
     void setPipeline(const Handle<GraphicsPipeline_t> &pipeline);
+    void setPipelineLayout(const Handle<PipelineLayout_t> &pipelineLayout);
 
     void bindShaders(const std::vector<ShaderStageFlags>& stages, const std::vector<Handle<ShaderObject_t>>& shaders);
 

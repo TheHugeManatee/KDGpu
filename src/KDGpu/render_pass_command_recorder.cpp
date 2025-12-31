@@ -55,6 +55,12 @@ void RenderPassCommandRecorder::setPipeline(const Handle<GraphicsPipeline_t> &pi
     apiRenderPassCommandRecorder->setPipeline(pipeline);
 }
 
+void RenderPassCommandRecorder::setPipelineLayout(const Handle<PipelineLayout_t> &pipelineLayout)
+{
+    auto *apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);
+    apiRenderPassCommandRecorder->setPipelineLayout(pipelineLayout);
+}
+
 void RenderPassCommandRecorder::bindShaders(const std::vector<ShaderStageFlags>& stages, const std::vector<Handle<ShaderObject_t>>& shaders)
 {
     auto apiRenderPassCommandRecorder = m_api->resourceManager()->getRenderPassCommandRecorder(m_renderPassCommandRecorder);

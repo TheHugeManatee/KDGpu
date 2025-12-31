@@ -34,7 +34,10 @@ VulkanRenderPassCommandRecorder::VulkanRenderPassCommandRecorder(VkCommandBuffer
 void VulkanRenderPassCommandRecorder::setPipeline(const Handle<GraphicsPipeline_t> &_pipeline)
 {
     pipeline = _pipeline;
+    pipelineLayout = {};
     VulkanGraphicsPipeline *vulkanGraphicsPipeline = vulkanResourceManager->getGraphicsPipeline(pipeline);
+    if (vulkanGraphicsPipeline)
+        pipelineLayout = vulkanGraphicsPipeline->pipelineLayoutHandle;
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanGraphicsPipeline->pipeline);
 
     if (!firstPipelineWasSet) {
@@ -52,6 +55,11 @@ void VulkanRenderPassCommandRecorder::setPipeline(const Handle<GraphicsPipeline_
 
         firstPipelineWasSet = true;
     }
+}
+
+void VulkanRenderPassCommandRecorder::setPipelineLayout(const Handle<PipelineLayout_t> &_pipelineLayout)
+{
+    pipelineLayout = _pipelineLayout;
 }
 
 void VulkanRenderPassCommandRecorder::bindShaders(const std::vector<ShaderStageFlags> &stages, const std::vector<Handle<ShaderObject_t>> &shaders)
@@ -144,6 +152,10 @@ void VulkanRenderPassCommandRecorder::setBindGroup(uint32_t group, const Handle<
     VkPipelineLayout vkPipelineLayout{ VK_NULL_HANDLE };
     if (pipelineLayout.isValid()) {
         VulkanPipelineLayout *vulkanPipelineLayout = vulkanResourceManager->getPipelineLayout(pipelineLayout);
+        if (vulkanPipelineLayout)
+            vkPipelineLayout = vulkanPipelineLayout->pipelineLayout;
+    } else if (this->pipelineLayout.isValid()) {
+        VulkanPipelineLayout *vulkanPipelineLayout = vulkanResourceManager->getPipelineLayout(this->pipelineLayout);
         if (vulkanPipelineLayout)
             vkPipelineLayout = vulkanPipelineLayout->pipelineLayout;
     } else if (pipeline.isValid()) {
@@ -760,6 +772,10 @@ void VulkanRenderPassCommandRecorder::pushConstant(const PushConstantRange &cons
         VulkanPipelineLayout *vulkanPipelineLayout = vulkanResourceManager->getPipelineLayout(pipelineLayout);
         if (vulkanPipelineLayout)
             vkPipelineLayout = vulkanPipelineLayout->pipelineLayout;
+    } else if (this->pipelineLayout.isValid()) {
+        VulkanPipelineLayout *vulkanPipelineLayout = vulkanResourceManager->getPipelineLayout(this->pipelineLayout);
+        if (vulkanPipelineLayout)
+            vkPipelineLayout = vulkanPipelineLayout->pipelineLayout;
     } else if (pipeline.isValid()) {
         VulkanGraphicsPipeline *vulkanPipeline = vulkanResourceManager->getGraphicsPipeline(pipeline);
         VulkanPipelineLayout *vulkanPipelineLayout = vulkanResourceManager->getPipelineLayout(vulkanPipeline->pipelineLayoutHandle);
@@ -787,6 +803,10 @@ void VulkanRenderPassCommandRecorder::pushBindGroup(uint32_t group,
 
         if (pipelineLayout.isValid()) {
             VulkanPipelineLayout *vulkanPipelineLayout = vulkanResourceManager->getPipelineLayout(pipelineLayout);
+            if (vulkanPipelineLayout)
+                vkPipelineLayout = vulkanPipelineLayout->pipelineLayout;
+        } else if (this->pipelineLayout.isValid()) {
+            VulkanPipelineLayout *vulkanPipelineLayout = vulkanResourceManager->getPipelineLayout(this->pipelineLayout);
             if (vulkanPipelineLayout)
                 vkPipelineLayout = vulkanPipelineLayout->pipelineLayout;
         } else if (pipeline.isValid()) {

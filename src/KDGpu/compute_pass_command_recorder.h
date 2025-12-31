@@ -65,6 +65,7 @@ public:
     operator Handle<ComputePassCommandRecorder_t>() const noexcept { return m_computePassCommandRecorder; }
 
     void setPipeline(const Handle<ComputePipeline_t> &pipeline);
+    void setPipelineLayout(const Handle<PipelineLayout_t> &pipelineLayout);
     void bindShader(const Handle<ShaderObject_t> &shader);
 
     void setBindGroup(uint32_t group, const Handle<BindGroup_t> &bindGroup,

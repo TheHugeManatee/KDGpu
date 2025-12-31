@@ -39,6 +39,7 @@ struct KDGPU_EXPORT VulkanRenderPassCommandRecorder {
                                              bool _dynamicRendering);
 
     void setPipeline(const Handle<GraphicsPipeline_t> &pipeline);
+    void setPipelineLayout(const Handle<PipelineLayout_t> &pipelineLayout);
     void bindShaders(const std::vector<ShaderStageFlags>& stages, const std::vector<Handle<ShaderObject_t>>& shaders);
     void setVertexBuffer(uint32_t index, const Handle<Buffer_t> &buffer, DeviceSize offset) const;
     void setVertexBuffers(uint32_t firstBinding, const std::vector<VertexBufferBinding> &bindings);
@@ -109,6 +110,7 @@ struct KDGPU_EXPORT VulkanRenderPassCommandRecorder {
     VulkanResourceManager *vulkanResourceManager{ nullptr };
     Handle<Device_t> deviceHandle;
     Handle<GraphicsPipeline_t> pipeline;
+    Handle<PipelineLayout_t> pipelineLayout;
     bool firstPipelineWasSet{ false };
     bool dynamicRendering{ false };
     // NOLINTEND(misc-non-private-member-variables-in-classes)

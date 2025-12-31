@@ -29,8 +29,19 @@ VulkanComputePassCommandRecorder::VulkanComputePassCommandRecorder(VkCommandBuff
 void VulkanComputePassCommandRecorder::setPipeline(const Handle<ComputePipeline_t> &_pipeline)
 {
     pipeline = _pipeline;
+    pipelineLayout = {};
     VulkanComputePipeline *vulkanPipeline = vulkanResourceManager->getComputePipeline(pipeline);
+    if (!vulkanPipeline)
+        return;
+    if (vulkanResourceManager->getPipelineLayout(vulkanPipeline->pipelineLayoutHandle)) {
+        pipelineLayout = vulkanPipeline->pipelineLayoutHandle;
+    }
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, vulkanPipeline->pipeline);
+}
+
+void VulkanComputePassCommandRecorder::setPipelineLayout(const Handle<PipelineLayout_t> &_pipelineLayout)
+{
+    pipelineLayout = _pipelineLayout;
 }
 
 void VulkanComputePassCommandRecorder::bindShader(const Handle<ShaderObject_t> &shader)
@@ -64,6 +75,10 @@ void VulkanComputePassCommandRecorder::setBindGroup(uint32_t group, const Handle
     VkPipelineLayout vkPipelineLayout{ VK_NULL_HANDLE };
     if (pipelineLayout.isValid()) {
         VulkanPipelineLayout *vulkanPipelineLayout = vulkanResourceManager->getPipelineLayout(pipelineLayout);
+        if (vulkanPipelineLayout != nullptr)
+            vkPipelineLayout = vulkanPipelineLayout->pipelineLayout;
+    } else if (this->pipelineLayout.isValid()) {
+        VulkanPipelineLayout *vulkanPipelineLayout = vulkanResourceManager->getPipelineLayout(this->pipelineLayout);
         if (vulkanPipelineLayout != nullptr)
             vkPipelineLayout = vulkanPipelineLayout->pipelineLayout;
     } else if (pipeline.isValid()) {
@@ -115,6 +130,9 @@ void VulkanComputePassCommandRecorder::pushConstant(const PushConstantRange &con
     if (pipelineLayout.isValid()) {
         if (auto *pLayout = vulkanResourceManager->getPipelineLayout(pipelineLayout); pLayout)
             vkPipelineLayout = pLayout->pipelineLayout;
+    } else if (this->pipelineLayout.isValid()) {
+        if (auto *pLayout = vulkanResourceManager->getPipelineLayout(this->pipelineLayout); pLayout)
+            vkPipelineLayout = pLayout->pipelineLayout;
     } else if (pipeline.isValid()) {
         VulkanComputePipeline *vulkanPipeline = vulkanResourceManager->getComputePipeline(pipeline);
         VulkanPipelineLayout *pLayout = vulkanResourceManager->getPipelineLayout(vulkanPipeline->pipelineLayoutHandle);
@@ -143,6 +161,10 @@ void VulkanComputePassCommandRecorder::pushBindGroup(uint32_t group,
 
         if (pipelineLayout.isValid()) {
             VulkanPipelineLayout *vulkanPipelineLayout = vulkanResourceManager->getPipelineLayout(pipelineLayout);
+            if (vulkanPipelineLayout)
+                vkPipelineLayout = vulkanPipelineLayout->pipelineLayout;
+        } else if (this->pipelineLayout.isValid()) {
+            VulkanPipelineLayout *vulkanPipelineLayout = vulkanResourceManager->getPipelineLayout(this->pipelineLayout);
             if (vulkanPipelineLayout)
                 vkPipelineLayout = vulkanPipelineLayout->pipelineLayout;
         } else if (pipeline.isValid()) {

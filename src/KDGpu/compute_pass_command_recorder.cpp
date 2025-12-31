@@ -54,6 +54,12 @@ void ComputePassCommandRecorder::setPipeline(const Handle<ComputePipeline_t> &pi
     apiComputePassCommandRecorder->setPipeline(pipeline);
 }
 
+void ComputePassCommandRecorder::setPipelineLayout(const Handle<PipelineLayout_t> &pipelineLayout)
+{
+    auto *apiComputePassCommandRecorder = m_api->resourceManager()->getComputePassCommandRecorder(m_computePassCommandRecorder);
+    apiComputePassCommandRecorder->setPipelineLayout(pipelineLayout);
+}
+
 void ComputePassCommandRecorder::bindShader(const Handle<ShaderObject_t> &shader)
 {
     auto *apiComputePassCommandRecorder = m_api->resourceManager()->getComputePassCommandRecorder(m_computePassCommandRecorder);

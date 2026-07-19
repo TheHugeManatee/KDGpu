@@ -27,13 +27,26 @@ if((CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT APPLE)
    OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND NOT APPLE)
    OR (CMAKE_CXX_COMPILER_ID STREQUAL "Intel" AND NOT WIN32)
 )
+    set(KDGPU_LINUX_SANITIZERS_ACTIVE OFF)
+    if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+        foreach(_sanitizer_flag IN ITEMS CMAKE_CXX_FLAGS CMAKE_SHARED_LINKER_FLAGS CMAKE_MODULE_LINKER_FLAGS)
+            if("${${_sanitizer_flag}}" MATCHES "(^| )-fsanitize=")
+                set(KDGPU_LINUX_SANITIZERS_ACTIVE ON)
+                break()
+            endif()
+        endforeach()
+    endif()
+
     # Linker warnings should be treated as errors
     set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--fatal-warnings ${CMAKE_SHARED_LINKER_FLAGS}")
     set(CMAKE_MODULE_LINKER_FLAGS "-Wl,--fatal-warnings ${CMAKE_MODULE_LINKER_FLAGS}")
 
-    # Do not allow undefined symbols, even in non-symbolic shared libraries
-    set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-undefined ${CMAKE_SHARED_LINKER_FLAGS}")
-    set(CMAKE_MODULE_LINKER_FLAGS "-Wl,--no-undefined ${CMAKE_MODULE_LINKER_FLAGS}")
+    # Sanitized Linux shared libraries rely on runtime symbols that are resolved later.
+    if(NOT KDGPU_LINUX_SANITIZERS_ACTIVE)
+        # Do not allow undefined symbols, even in non-symbolic shared libraries
+        set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-undefined ${CMAKE_SHARED_LINKER_FLAGS}")
+        set(CMAKE_MODULE_LINKER_FLAGS "-Wl,--no-undefined ${CMAKE_MODULE_LINKER_FLAGS}")
+    endif()
 endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU")
